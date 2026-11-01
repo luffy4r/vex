@@ -1,1 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FQKRZ4WJFT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'G-FQKRZ4WJFT');
+</script> 
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://ik.imagekit.io" crossorigin>
+    <title>Petits livrets de Sudoku 🧩 | Entraînez votre cerveau</title>
+    <link rel="icon" href="https://ik.imagekit.io/evastouch/IMG_7212.PNG"> 
+    <meta name="description" content="Petits livrets de Sudoku pour tous les niveaux. Livraison dans les 58 wilayas, paiement à la livraison 🧩">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Sudoku Store">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:title" content="Petits livrets de Sudoku 🧩 | Entraînez votre cerveau">
+    <meta property="og:description" content="Petits livrets de Sudoku pour tous les niveaux. Livraison dans les 58 wilayas, paiement à la livraison 🧩">
+    <meta property="og:image" content="https://ik.imagekit.io/evastouch/rose.jpg?tr=w-800,ar-1-1,q-75,f-jpg">
+    <meta property="og:image:width" content="800">
+    <meta property="og:image:height" content="800">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configuration Tailwind adaptée au thème Bleu/Blanc du logo
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        eva: {
+                            beige: '#ffffff', // Fond blanc
+                            pinkLight: '#f0f4f8', // Gris-bleu très clair
+                            pink: '#dbeafe', // Bleu clair
+                            burgundyLight: '#3b82f6', // Bleu moyen
+                            burgundy: '#164081', // Bleu foncé (couleur du logo)
+                            'burgundy-dark': '#0f2a55', // Bleu très foncé
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'Cairo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #ffffff; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .modal-enter { animation: fadeIn 0.3s ease-out forwards; }
+        .modal-content-enter { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translate(-50%, 100%); } to { opacity: 1; transform: translate(-50%, -50%); } }
+        
+        input[type="radio"].eva-radio {
+            accent-color: #164081;
+            width: 1.25rem; height: 1.25rem;
+            cursor: pointer;
+        }
+        
+        .loader {
+            border: 3px solid #f0f4f8; border-top: 3px solid #164081;
+            border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .variant-btn.active {
+            border-color: #164081;
+            transform: scale(1.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        @keyframes popIn {
+        0% { transform: scale(0.5); opacity: 0; }
+        70% { transform: scale(1.1); opacity: 1; }
+        100% { transform: scale(1); }
+    }
+    .success-icon-anim { 
+        animation: popIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+    }
+    .fade-in-section { 
+        animation: fadeIn 0.4s ease-out forwards; 
+    } 
+        /* Animation du cercle qui se dessine */
+    .anim-check-circle {
+        stroke-dasharray: 160;
+        stroke-dashoffset: 160;
+        animation: drawCheck 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+    }
+    /* Remplissage doux en arrière-plan */
+    .anim-check-fill {
+        animation: fillCheck 0.4s ease-out 0.5s forwards;
+    }
+    /* Animation de la coche qui se dessine */
+    .anim-check-path {
+        stroke-dasharray: 50;
+        stroke-dashoffset: 50;
+        animation: drawCheck 0.4s cubic-bezier(0.65, 0, 0.45, 1) 0.7s forwards;
+    }
+    /* Halo lumineux autour (Glow) */
+    .anim-check-glow {
+        animation: glowCheck 1.5s ease-out 0.7s infinite alternate forwards;
+    }
+
+    @keyframes drawCheck {
+        to { stroke-dashoffset: 0; }
+    }
+    @keyframes fillCheck {
+        to { fill: #f0fdf4; }
+    }
+    @keyframes glowCheck {
+        0% { opacity: 0; transform: scale(0.9); }
+        100% { opacity: 0.4; transform: scale(1.2); }
+    } 
+        /* Animation fermeture pop-up (Slide Down) */
+    .modal-content-exit {
+        animation: slideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes slideDown {
+        from { opacity: 1; transform: translate(-50%, -50%); }
+        to { opacity: 0; transform: translate(-50%, 100%); }
+    }
+
+    /* Animation suppression article (Glissement poubelle) */
+    .item-delete-anim {
+        animation: slideOutTrash 0.3s ease-in forwards;
+    }
+    @keyframes slideOutTrash {
+        50% { opacity: 0.5; transform: scale(0.95) translateX(10px); }
+        100% { opacity: 0; transform: scale(0.9) translateX(50px); }
+    } 
+
+        .btn-tactile {
+        transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-tactile:active {
+        transform: scale(0.80);
+    } 
+        /* Animation des avantages */
+    .stagger-item {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .stagger-item.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .stagger-delay-1 { transition-delay: 0.1s; }
+    .stagger-delay-2 { transition-delay: 0.25s; }
+    .stagger-delay-3 { transition-delay: 0.4s; } 
+        
+    </style>
+</head> 
+<body ontouchstart="" class="text-gray-800 antialiased min-h-screen flex flex-col">
+
+    <header id="site-header" class="bg-white shadow-sm py-0.5 sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-eva-burgundy tracking-wide">Sudoku 🧩</div>
+            <button id="cart-btn" onclick="openModal()" class="relative p-2 text-eva-burgundy hover:bg-eva-pinkLight rounded-full transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h- 
+                
