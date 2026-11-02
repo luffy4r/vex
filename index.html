@@ -13,7 +13,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://ik.imagekit.io" crossorigin>
-    <title>Petit livret de Sudoku 🧩 | Entraînez votre cerveau</title>
+    <title>Petit livret de Sudoku 🧩</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,10 +44,19 @@
     
     <style>
         body { background-color: #f8fafc; }
-        .modal-enter { animation: fadeIn 0.3s ease-out forwards; }
-        .modal-content-enter { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        /* Nouvelles animations pour le Modal */
+        .modal-enter { animation: fadeIn 0.2s ease-out forwards; }
+        .modal-content-enter { animation: slideUpMobile 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        @media (min-width: 768px) {
+            .modal-content-enter { animation: popInDesktop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        }
+
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { opacity: 0; transform: translate(-50%, 100%); } to { opacity: 1; transform: translate(-50%, -50%); } }
+        @keyframes slideUpMobile { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        @keyframes popInDesktop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        
         .btn-tactile { transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1); }
         .btn-tactile:active { transform: scale(0.95); } 
         input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
@@ -69,16 +78,17 @@
     </header>
 
     <!-- Produit Unique -->
-    <main class="flex-grow py-10 px-4">
-        <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col md:flex-row">
+    <main class="flex-grow py-0 md:py-10 px-0 md:px-4">
+        <!-- Container principal avec marges nulles sur mobile pour agrandir l'image -->
+        <div class="max-w-4xl mx-auto bg-white md:rounded-2xl md:shadow-sm md:border border-gray-100 overflow-hidden flex flex-col md:flex-row">
             
-            <!-- Photo du produit -->
-            <div class="md:w-1/2 bg-gray-50 flex items-center justify-center p-6">
-                <img src="https://ik.imagekit.io/evastouch/rose.jpg?tr=w-800,ar-1-1,q-75,f-jpg" alt="Petit livret de Sudoku" class="w-full max-w-sm rounded-xl shadow-md object-cover aspect-square">
+            <!-- Photo du produit (Pleine largeur sur mobile) -->
+            <div class="md:w-1/2 bg-gray-50 flex items-center justify-center p-0 md:p-6">
+                <img src="https://ik.imagekit.io/evastouch/rose.jpg?tr=w-800,ar-1-1,q-75,f-jpg" alt="Petit livret de Sudoku" class="w-full h-auto object-cover aspect-square md:rounded-xl md:shadow-md">
             </div>
 
             <!-- Détails et actions -->
-            <div class="md:w-1/2 p-8 flex flex-col justify-center">
+            <div class="md:w-1/2 p-6 md:p-8 flex flex-col justify-center">
                 <h1 class="text-3xl md:text-4xl font-bold text-eva-burgundy mb-2">Petit livret de Sudoku</h1>
                 <p class="text-2xl font-semibold text-gray-900 mb-6">600 DA</p>
                 
@@ -110,7 +120,7 @@
         </div>
         
         <!-- Avantages -->
-        <div class="max-w-4xl mx-auto mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+        <div class="max-w-4xl mx-auto mt-6 px-4 md:px-0 grid grid-cols-1 md:grid-cols-3 gap-4 text-center pb-8">
             <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
                 <div class="text-2xl mb-1">🚚</div>
                 <h3 class="font-bold text-sm text-gray-800">Livraison 58 Wilayas</h3>
@@ -126,9 +136,10 @@
         </div>
     </main>
 
-    <!-- Modal Panier -->
-    <div id="cart-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-end md:items-center justify-center">
-        <div class="bg-white w-full md:w-96 md:rounded-2xl rounded-t-2xl p-6 max-h-[90vh] overflow-y-auto absolute left-1/2 transform -translate-x-1/2 md:top-1/2 md:-translate-y-1/2 bottom-0 transition-transform">
+    <!-- Modal Panier (Correction de l'affichage) -->
+    <div id="cart-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex-col justify-end md:justify-center items-center">
+        <!-- Sur mobile, ce bloc sera poussé en bas. Sur desktop, il sera centré. -->
+        <div id="modal-content" class="bg-white w-full md:w-[450px] md:rounded-2xl rounded-t-3xl p-6 pb-8 max-h-[90vh] overflow-y-auto shadow-2xl">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl font-bold text-eva-burgundy">Votre Panier</h2>
                 <button onclick="closeModal()" class="text-gray-400 hover:text-gray-800 text-3xl leading-none">&times;</button>
@@ -234,14 +245,19 @@
 
         function openModal() {
             const modal = document.getElementById('cart-modal');
+            const modalContent = document.getElementById('modal-content');
             modal.classList.remove('hidden');
-            modal.firstElementChild.classList.add('modal-content-enter');
+            modal.classList.add('flex');
+            modalContent.classList.add('modal-content-enter');
             if(cart.length === 0) updateCartUI();
         }
 
         function closeModal() {
             const modal = document.getElementById('cart-modal');
+            const modalContent = document.getElementById('modal-content');
+            modalContent.classList.remove('modal-content-enter');
             modal.classList.add('hidden');
+            modal.classList.remove('flex');
         }
 
         function submitOrder(e) {
@@ -258,4 +274,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
