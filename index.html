@@ -13,9 +13,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://ik.imagekit.io" crossorigin>
-    <title>Petits livrets de Sudoku 🧩 | Entraînez votre cerveau</title>
+    <title>Petit livret de Sudoku 🧩 | Entraînez votre cerveau</title>
     <link rel="icon" href="https://ik.imagekit.io/evastouch/IMG_7212.PNG"> 
-    <meta name="description" content="Petits livrets de Sudoku pour tous les niveaux. Livraison dans les 58 wilayas, paiement à la livraison 🧩">
+    <meta name="description" content="Petit livret de Sudoku. Livraison dans les 58 wilayas, paiement à la livraison 🧩">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,91 +35,4 @@
                             burgundy: '#164081',
                             'burgundy-dark': '#0f2a55',
                         }
-                    },
-                    fontFamily: {
-                        sans: ['Poppins', 'Cairo', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <style>
-        body { background-color: #ffffff; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .modal-enter { animation: fadeIn 0.3s ease-out forwards; }
-        .modal-content-enter { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { opacity: 0; transform: translate(-50%, 100%); } to { opacity: 1; transform: translate(-50%, -50%); } }
-        .btn-tactile { transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1); }
-        .btn-tactile:active { transform: scale(0.95); } 
-    </style>
-</head> 
-<body class="text-gray-800 antialiased min-h-screen flex flex-col font-sans">
-
-    <!-- En-tête -->
-    <header id="site-header" class="bg-white shadow-sm py-3 sticky top-0 z-40">
-        <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
-            <div class="text-2xl font-bold text-eva-burgundy tracking-wide">Sudoku 🧩</div>
-            <button id="cart-btn" onclick="openModal()" class="relative p-2 text-eva-burgundy hover:bg-eva-pinkLight rounded-full transition btn-tactile">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                <span id="cart-count" class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center transform scale-0 transition-transform">0</span>
-            </button>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <main class="flex-grow">
-        <section class="bg-eva-pinkLight py-12 px-4 text-center">
-            <h1 class="text-4xl md:text-5xl font-bold text-eva-burgundy mb-4">Entraînez votre cerveau</h1>
-            <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">Découvrez nos petits livrets de Sudoku adaptés à tous les niveaux. Emportez-les partout avec vous !</p>
-            <a href="#produits" class="bg-eva-burgundy text-white px-8 py-3 rounded-full font-semibold text-lg shadow-lg hover:bg-eva-burgundy-dark transition btn-tactile inline-block">
-                Voir les livrets
-            </a>
-        </section>
-
-        <!-- Avantages -->
-        <section class="py-10 bg-white">
-            <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                <div class="p-4">
-                    <div class="text-4xl mb-3">🚚</div>
-                    <h3 class="font-bold text-lg mb-1">Livraison 58 Wilayas</h3>
-                    <p class="text-sm text-gray-500">Où que vous soyez en Algérie.</p>
-                </div>
-                <div class="p-4">
-                    <div class="text-4xl mb-3">💵</div>
-                    <h3 class="font-bold text-lg mb-1">Paiement à la livraison</h3>
-                    <p class="text-sm text-gray-500">Payez uniquement à la réception.</p>
-                </div>
-                <div class="p-4">
-                    <div class="text-4xl mb-3">🧠</div>
-                    <h3 class="font-bold text-lg mb-1">100% Bénéfique</h3>
-                    <p class="text-sm text-gray-500">Améliore la concentration et la mémoire.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Produits -->
-        <section id="produits" class="py-12 bg-gray-50">
-            <div class="max-w-6xl mx-auto px-4">
-                <h2 class="text-3xl font-bold text-center text-eva-burgundy mb-10">Choisissez votre niveau</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <!-- Produit 1 -->
-                    <div class="bg-white rounded-2xl shadow-md overflow-hidden p-6 text-center">
-                        <div class="h-40 bg-green-100 rounded-xl mb-4 flex items-center justify-center text-5xl">🌱</div>
-                        <h3 class="text-xl font-bold mb-2">Niveau Débutant</h3>
-                        <p class="text-gray-500 mb-4">Pour commencer en douceur.</p>
-                        <p class="text-2xl font-bold text-eva-burgundy mb-6">600 DA</p>
-                        <button onclick="addToCart('Sudoku Débutant', 600)" class="w-full bg-eva-pinkLight text-eva-burgundy font-semibold py-2 rounded-lg hover:bg-eva-pink transition btn-tactile">
-                            Ajouter au panier
-                        </button>
-                    </div>
-
-                    <!-- Produit 2 -->
-                    <div class="bg-white rounded-2xl shadow-md overflow-hidden p-6 text-center border-2 border-eva-burgundy relative">
-                        <div class="absolute top-0 right-0 bg-eva-burgundy text-white text-xs font-bold px-3 py-1 rounded-bl-lg">Populaire</div>
-                        <div class="h-40 bg-yellow-100 rounded-xl mb-4 flex items-center justify-center text-
+                    
