@@ -45,7 +45,6 @@
     <style>
         body { background-color: #f8fafc; }
         
-        /* Nouvelles animations pour le Modal */
         .modal-enter { animation: fadeIn 0.2s ease-out forwards; }
         .modal-content-enter { animation: slideUpMobile 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         
@@ -79,12 +78,11 @@
 
     <!-- Produit Unique -->
     <main class="flex-grow py-0 md:py-10 px-0 md:px-4">
-        <!-- Container principal avec marges nulles sur mobile pour agrandir l'image -->
         <div class="max-w-4xl mx-auto bg-white md:rounded-2xl md:shadow-sm md:border border-gray-100 overflow-hidden flex flex-col md:flex-row">
             
-            <!-- Photo du produit (Pleine largeur sur mobile) -->
+            <!-- Photo du produit (Format portrait 4/5) -->
             <div class="md:w-1/2 bg-gray-50 flex items-center justify-center p-0 md:p-6">
-                <img src="https://ik.imagekit.io/evastouch/rose.jpg?tr=w-800,ar-1-1,q-75,f-jpg" alt="Petit livret de Sudoku" class="w-full h-auto object-cover aspect-square md:rounded-xl md:shadow-md">
+                <img src="https://ik.imagekit.io/evastouch/rose.jpg?tr=w-800,ar-4-5,q-75,f-jpg" alt="Petit livret de Sudoku" class="w-full h-auto object-cover aspect-[4/5] md:rounded-xl md:shadow-md">
             </div>
 
             <!-- Détails et actions -->
@@ -119,26 +117,31 @@
             </div>
         </div>
         
-        <!-- Avantages -->
-        <div class="max-w-4xl mx-auto mt-6 px-4 md:px-0 grid grid-cols-1 md:grid-cols-3 gap-4 text-center pb-8">
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                <div class="text-2xl mb-1">🚚</div>
-                <h3 class="font-bold text-sm text-gray-800">Livraison 58 Wilayas</h3>
+        <!-- Avantages (Nouveau style Evastouch) -->
+        <div class="max-w-4xl mx-auto mt-8 px-2 md:px-0 grid grid-cols-3 gap-2 text-center pb-10">
+            <div class="flex flex-col items-center">
+                <div class="w-14 h-14 bg-eva-pinkLight rounded-full flex items-center justify-center text-2xl mb-3">
+                    🚚
+                </div>
+                <h3 class="font-semibold text-xs md:text-sm text-gray-800 leading-tight">Livraison 58 Wilayas</h3>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                <div class="text-2xl mb-1">💵</div>
-                <h3 class="font-bold text-sm text-gray-800">Paiement à la livraison</h3>
+            <div class="flex flex-col items-center">
+                <div class="w-14 h-14 bg-eva-pinkLight rounded-full flex items-center justify-center text-2xl mb-3">
+                    💵
+                </div>
+                <h3 class="font-semibold text-xs md:text-sm text-gray-800 leading-tight">Paiement à la livraison</h3>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                <div class="text-2xl mb-1">🧠</div>
-                <h3 class="font-bold text-sm text-gray-800">100% Bénéfique</h3>
+            <div class="flex flex-col items-center">
+                <div class="w-14 h-14 bg-eva-pinkLight rounded-full flex items-center justify-center text-2xl mb-3">
+                    🧠
+                </div>
+                <h3 class="font-semibold text-xs md:text-sm text-gray-800 leading-tight">100% Bénéfique</h3>
             </div>
         </div>
     </main>
 
-    <!-- Modal Panier (Correction de l'affichage) -->
+    <!-- Modal Panier -->
     <div id="cart-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex-col justify-end md:justify-center items-center">
-        <!-- Sur mobile, ce bloc sera poussé en bas. Sur desktop, il sera centré. -->
         <div id="modal-content" class="bg-white w-full md:w-[450px] md:rounded-2xl rounded-t-3xl p-6 pb-8 max-h-[90vh] overflow-y-auto shadow-2xl">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl font-bold text-eva-burgundy">Votre Panier</h2>
