@@ -183,13 +183,13 @@
                 </div>
                 
                 <div class="grid grid-cols-2 gap-3">
-                    <input type="text" placeholder="Nom" required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy placeholder-gray-400">
-                    <input type="text" placeholder="Prénom" required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy placeholder-gray-400">
+                    <input type="text" id="nom" placeholder="Nom" required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy placeholder-gray-400">
+                    <input type="text" id="prenom" placeholder="Prénom" required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy placeholder-gray-400"> 
                 </div>
                 
                 <div>
-                    <input type="tel" placeholder="0555 70 30 37" required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy placeholder-gray-400">
-                    <p class="text-[11px] text-gray-500 mt-1.5 ml-1">Format: 05, 06 ou 07 suivi de 8 chiffres</p>
+                    <input type="tel" id="telephone" placeholder="0555 70 30 37" required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy placeholder-gray-400"> 
+                                        <p class="text-[11px] text-gray-500 mt-1.5 ml-1">Format: 05, 06 ou 07 suivi de 8 chiffres</p>
                 </div>
                 
                 <!-- Section Destination -->
@@ -199,14 +199,14 @@
                 </div>
                 
                 <div class="space-y-3">
-                    <select required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy text-gray-600 appearance-none select-chevron">
+                    <select id="wilaya" required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy text-gray-600 appearance-none select-chevron"> 
                         <option value="" disabled selected>Wilaya • الولاية</option>
                         <option value="16">16 - Alger</option>
                         <option value="09">09 - Blida</option>
                         <option value="31">31 - Oran</option>
                     </select>
                     
-                    <select required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy text-gray-600 appearance-none select-chevron">
+                    <select id="commune" required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy text-gray-600 appearance-none select-chevron">
                         <option value="" disabled selected>Commune • البلدية</option>
                         <option value="Mohammadia">Mohammadia</option>
                         <option value="Bab Ezzouar">Bab Ezzouar</option>
@@ -356,17 +356,58 @@
         }
 
         function submitOrder(e) {
-            e.preventDefault();
-            if(cart.length === 0) {
-                alert("Votre panier est vide !");
-                return;
-            }
-            alert("Commande validée avec succès ! (Simulation)");
+    e.preventDefault();
+    if(cart.length === 0) {
+        alert("Votre panier est vide !");
+        return;
+    }
+
+    // Récupération des informations du client
+    const orderData = {
+        nom: document.getElementById('nom').value,
+        prenom: document.getElementById('prenom').value,
+        telephone: document.getElementById('telephone').value,
+        wilaya: document.getElementById('wilaya').value,
+        commune: document.getElementById('commune').value,
+        cart: cart,
+        total: cart.reduce((sum, item) => sum + (item.price * item.qty), 0)
+    };
+
+    // Changer le texte du bouton pendant le chargement (optionnel mais cool)
+    const btn = e.target.querySelector('button[type="submit"]');
+    const originalText = btn.textContent;
+    btn.textContent = "Traitement en cours...";
+    btn.disabled = true;
+
+    // Envoi des données au backend (Pense à remplacer localhost par ton lien Render final)
+    fetch('http://localhost:3000/api/order', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            alert("✅ Commande validée avec succès !");
             cart = [];
             updateCartUI();
             closeModal();
             e.target.reset();
+        } else {
+            alert("❌ Erreur: " + data.message);
         }
+    })
+    .catch(error => {
+        console.error("Erreur de connexion :", error);
+        alert("❌ Impossible de contacter le serveur.");
+    })
+    .finally(() => {
+        btn.textContent = originalText;
+        btn.disabled = false;
+    });
+} 
     </script>
 </body>
 </html> 
