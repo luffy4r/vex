@@ -27,12 +27,12 @@
                     colors: {
                         eva: {
                             beige: '#ffffff',
-                            pinkLight: '#f0f4f8',
-                            pink: '#dbeafe',
+                            pinkLight: '#f0f4f8', /* Bleu très clair */
+                            pink: '#dbeafe', /* Bleu clair */
                             burgundyLight: '#3b82f6',
-                            burgundy: '#5a192e', /* Ajusté pour ressembler à la couleur du texte sur l'image */
-                            'burgundy-dark': '#3a0f1d',
-                            'cart-bg': '#fcf4f4',
+                            burgundy: '#164081', /* Bleu principal */
+                            'burgundy-dark': '#0f2a55',
+                            'cart-bg': '#f8fafc',
                         }
                     },
                     fontFamily: {
@@ -123,21 +123,21 @@
         <!-- Avantages -->
         <div class="max-w-4xl mx-auto mt-8 px-2 md:px-0 grid grid-cols-3 gap-2 text-center pb-10">
             <div class="flex flex-col items-center">
-                <div class="w-14 h-14 bg-pink-50 text-pink-500 rounded-full flex items-center justify-center text-2xl mb-3">🚚</div>
+                <div class="w-14 h-14 bg-eva-pinkLight text-eva-burgundy rounded-full flex items-center justify-center text-2xl mb-3">🚚</div>
                 <h3 class="font-semibold text-xs md:text-sm text-gray-800 leading-tight">Livraison rapide<br>partout en Algérie</h3>
             </div>
             <div class="flex flex-col items-center">
-                <div class="w-14 h-14 bg-pink-50 text-pink-500 rounded-full flex items-center justify-center text-2xl mb-3">💵</div>
+                <div class="w-14 h-14 bg-eva-pinkLight text-eva-burgundy rounded-full flex items-center justify-center text-2xl mb-3">💵</div>
                 <h3 class="font-semibold text-xs md:text-sm text-gray-800 leading-tight">Paiement à la<br>livraison</h3>
             </div>
             <div class="flex flex-col items-center">
-                <div class="w-14 h-14 bg-pink-50 text-pink-500 rounded-full flex items-center justify-center text-2xl mb-3">🧠</div>
+                <div class="w-14 h-14 bg-eva-pinkLight text-eva-burgundy rounded-full flex items-center justify-center text-2xl mb-3">🧠</div>
                 <h3 class="font-semibold text-xs md:text-sm text-gray-800 leading-tight">100%<br>Bénéfique</h3>
             </div>
         </div>
     </main>
 
-    <!-- Modal Panier (Aligné en haut sur mobile) -->
+    <!-- Modal Panier -->
     <div id="cart-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex-col justify-start md:justify-center items-center">
         <!-- Arrondi en bas sur mobile, partout sur desktop -->
         <div id="modal-content" class="bg-white w-full md:w-[480px] md:rounded-3xl rounded-b-3xl p-5 md:p-7 max-h-[95vh] overflow-y-auto shadow-2xl relative">
@@ -157,7 +157,7 @@
                     <span class="text-eva-burgundy">3/6</span>
                 </div>
                 <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                    <div class="bg-[#c27c88] h-1.5 rounded-full" style="width: 50%"></div>
+                    <div class="bg-eva-burgundy h-1.5 rounded-full" style="width: 50%"></div>
                 </div>
             </div>
             
@@ -210,7 +210,7 @@
                         <span>Total:</span>
                         <span id="cart-total">0 DZD</span>
                     </div>
-                    <button type="submit" class="w-full bg-[#1a2f4c] text-white font-bold py-4 rounded-2xl hover:bg-gray-900 transition shadow-lg shadow-gray-200 btn-tactile text-lg">
+                    <button type="submit" class="w-full bg-eva-burgundy text-white font-bold py-4 rounded-2xl hover:bg-eva-burgundy-dark transition shadow-lg shadow-gray-200 btn-tactile text-lg">
                         Confirmer la commande
                     </button>
                 </div>
@@ -229,7 +229,6 @@
             document.getElementById('display-qty').textContent = currentQty;
         }
 
-        // Modification de la quantité directement dans le panier
         function updateCartItemQty(index, change) {
             cart[index].qty += change;
             if (cart[index].qty < 1) {
@@ -254,9 +253,8 @@
                 totalPrice += (item.price * item.qty);
 
                 const li = document.createElement('li');
-                li.className = 'relative flex gap-4 bg-eva-cart-bg p-3.5 md:p-4 rounded-3xl border border-pink-50';
+                li.className = 'relative flex gap-4 bg-white p-3.5 md:p-4 rounded-3xl border border-gray-100 shadow-sm';
                 
-                // Structure HTML reproduisant la carte produit du panier (Image 7)
                 li.innerHTML = `
                     <img src="${item.img}" alt="${item.name}" class="w-16 h-20 md:w-20 md:h-24 object-cover rounded-2xl shadow-sm">
                     <div class="flex-1 flex flex-col justify-between py-0.5">
@@ -264,7 +262,7 @@
                         <div class="flex justify-between items-start">
                             <div class="pr-6">
                                 <h3 class="font-bold text-sm md:text-base text-gray-900 leading-tight">${item.name}</h3>
-                                <p class="text-xs text-eva-burgundy mt-1">Édition standard</p>
+                                <p class="text-xs text-eva-burgundy opacity-80 mt-1">Édition standard</p>
                             </div>
                             <!-- Bouton Corbeille -->
                             <button type="button" onclick="removeFromCart(${index})" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition p-1">
@@ -276,10 +274,10 @@
                         
                         <div class="flex justify-between items-end mt-2">
                             <!-- Sélecteur de quantité du panier -->
-                            <div class="flex items-center bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden h-8 md:h-9">
-                                <button type="button" onclick="updateCartItemQty(${index}, -1)" class="px-3 text-gray-600 hover:bg-gray-50 h-full flex items-center justify-center font-medium transition">-</button>
+                            <div class="flex items-center bg-gray-50 rounded-xl border border-gray-100 overflow-hidden h-8 md:h-9">
+                                <button type="button" onclick="updateCartItemQty(${index}, -1)" class="px-3 text-gray-600 hover:bg-gray-100 h-full flex items-center justify-center font-medium transition">-</button>
                                 <span class="px-2 font-bold text-sm min-w-[1.5rem] text-center">${item.qty}</span>
-                                <button type="button" onclick="updateCartItemQty(${index}, 1)" class="px-3 text-gray-600 hover:bg-gray-50 h-full flex items-center justify-center font-medium transition">+</button>
+                                <button type="button" onclick="updateCartItemQty(${index}, 1)" class="px-3 text-gray-600 hover:bg-gray-100 h-full flex items-center justify-center font-medium transition">+</button>
                             </div>
                             
                             <!-- Prix -->
@@ -323,7 +321,6 @@
             btn.classList.add('scale-110');
             setTimeout(() => btn.classList.remove('scale-110'), 200);
             
-            // Ouvre le panier automatiquement après l'ajout pour confirmer à l'utilisateur
             openModal();
         }
 
