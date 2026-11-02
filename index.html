@@ -14,8 +14,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://ik.imagekit.io" crossorigin>
     <title>Petit livret de Sudoku 🧩 | Entraînez votre cerveau</title>
-    <link rel="icon" href="https://ik.imagekit.io/evastouch/IMG_7212.PNG"> 
-    <meta name="description" content="Petit livret de Sudoku. Livraison dans les 58 wilayas, paiement à la livraison 🧩">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,4 +33,229 @@
                             burgundy: '#164081',
                             'burgundy-dark': '#0f2a55',
                         }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'Cairo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #f8fafc; }
+        .modal-enter { animation: fadeIn 0.3s ease-out forwards; }
+        .modal-content-enter { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translate(-50%, 100%); } to { opacity: 1; transform: translate(-50%, -50%); } }
+        .btn-tactile { transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1); }
+        .btn-tactile:active { transform: scale(0.95); } 
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    </style>
+</head> 
+<body class="text-gray-800 antialiased min-h-screen flex flex-col font-sans">
+
+    <!-- En-tête -->
+    <header class="bg-white shadow-sm py-3 sticky top-0 z-40">
+        <div class="max-w-5xl mx-auto px-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-eva-burgundy tracking-wide">Sudoku 🧩</div>
+            <button id="cart-btn" onclick="openModal()" class="relative p-2 text-eva-burgundy hover:bg-eva-pinkLight rounded-full transition btn-tactile">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span id="cart-count" class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center transform scale-0 transition-transform">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Produit Unique -->
+    <main class="flex-grow py-10 px-4">
+        <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col md:flex-row">
+            
+            <!-- Photo du produit -->
+            <div class="md:w-1/2 bg-gray-50 flex items-center justify-center p-6">
+                <img src="https://ik.imagekit.io/evastouch/rose.jpg?tr=w-800,ar-1-1,q-75,f-jpg" alt="Petit livret de Sudoku" class="w-full max-w-sm rounded-xl shadow-md object-cover aspect-square">
+            </div>
+
+            <!-- Détails et actions -->
+            <div class="md:w-1/2 p-8 flex flex-col justify-center">
+                <h1 class="text-3xl md:text-4xl font-bold text-eva-burgundy mb-2">Petit livret de Sudoku</h1>
+                <p class="text-2xl font-semibold text-gray-900 mb-6">600 DA</p>
+                
+                <p class="text-gray-600 mb-8 leading-relaxed">
+                    Entraînez votre cerveau au quotidien avec notre livret de Sudoku format poche. Idéal pour stimuler la concentration et la mémoire, où que vous soyez. 
+                </p>
+
+                <!-- Sélecteur de quantité -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Quantité</label>
+                    <div class="flex items-center inline-flex border-2 border-gray-200 rounded-lg overflow-hidden">
+                        <button onclick="updateDisplayQty(-1)" class="px-5 py-3 bg-gray-50 text-gray-600 hover:bg-gray-100 transition font-bold text-lg focus:outline-none">-</button>
+                        <span id="display-qty" class="px-6 py-3 font-semibold text-lg min-w-[3rem] text-center border-x-2 border-gray-200">1</span>
+                        <button onclick="updateDisplayQty(1)" class="px-5 py-3 bg-gray-50 text-gray-600 hover:bg-gray-100 transition font-bold text-lg focus:outline-none">+</button>
+                    </div>
+                </div>
+                
+                <!-- Boutons d'action -->
+                <div class="flex flex-col gap-3">
+                    <button onclick="addToCart('Petit livret de Sudoku', 600)" class="w-full bg-eva-burgundy text-white font-bold py-3.5 rounded-xl hover:bg-eva-burgundy-dark transition shadow-md btn-tactile text-lg flex items-center justify-center gap-2">
+                        Ajouter au panier
+                    </button>
                     
+                    <button onclick="openModal()" class="w-full bg-eva-pinkLight text-eva-burgundy border border-eva-pink font-bold py-3.5 rounded-xl hover:bg-eva-pink transition btn-tactile text-lg">
+                        Voir le panier
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Avantages -->
+        <div class="max-w-4xl mx-auto mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                <div class="text-2xl mb-1">🚚</div>
+                <h3 class="font-bold text-sm text-gray-800">Livraison 58 Wilayas</h3>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                <div class="text-2xl mb-1">💵</div>
+                <h3 class="font-bold text-sm text-gray-800">Paiement à la livraison</h3>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                <div class="text-2xl mb-1">🧠</div>
+                <h3 class="font-bold text-sm text-gray-800">100% Bénéfique</h3>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Panier -->
+    <div id="cart-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-end md:items-center justify-center">
+        <div class="bg-white w-full md:w-96 md:rounded-2xl rounded-t-2xl p-6 max-h-[90vh] overflow-y-auto absolute left-1/2 transform -translate-x-1/2 md:top-1/2 md:-translate-y-1/2 bottom-0 transition-transform">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-eva-burgundy">Votre Panier</h2>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-800 text-3xl leading-none">&times;</button>
+            </div>
+            
+            <ul id="cart-items" class="mb-4 space-y-3"></ul>
+            
+            <div class="border-t pt-4 mb-6">
+                <div class="flex justify-between font-bold text-xl text-gray-800">
+                    <span>Total:</span>
+                    <span id="cart-total">0 DA</span>
+                </div>
+            </div>
+
+            <!-- Formulaire -->
+            <form id="checkout-form" onsubmit="submitOrder(event)" class="space-y-3">
+                <input type="text" placeholder="Nom complet" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-eva-burgundy">
+                <input type="tel" placeholder="Numéro de téléphone" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-eva-burgundy">
+                <input type="text" placeholder="Wilaya" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-eva-burgundy">
+                <input type="text" placeholder="Commune" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-eva-burgundy">
+                
+                <button type="submit" class="w-full bg-eva-burgundy text-white font-bold py-3.5 rounded-xl mt-4 hover:bg-eva-burgundy-dark transition shadow-md btn-tactile text-lg">
+                    Confirmer la commande
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        let cart = [];
+        let currentQty = 1;
+
+        function updateDisplayQty(change) {
+            currentQty += change;
+            if (currentQty < 1) currentQty = 1;
+            document.getElementById('display-qty').textContent = currentQty;
+        }
+
+        function updateCartUI() {
+            const cartCount = document.getElementById('cart-count');
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+
+            let totalItems = 0;
+            let totalPrice = 0;
+
+            cartItems.innerHTML = '';
+            
+            cart.forEach((item, index) => {
+                totalItems += item.qty;
+                totalPrice += (item.price * item.qty);
+
+                const li = document.createElement('li');
+                li.className = 'flex justify-between items-center text-sm bg-gray-50 p-3 rounded-lg border border-gray-100';
+                li.innerHTML = `
+                    <div class="flex flex-col">
+                        <span class="font-semibold text-gray-800">${item.name}</span>
+                        <span class="text-xs text-gray-500">Quantité: ${item.qty}</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="font-bold text-eva-burgundy">${item.price * item.qty} DA</span>
+                        <button type="button" onclick="removeFromCart(${index})" class="text-red-400 hover:text-red-600 font-bold text-lg">&times;</button>
+                    </div>
+                `;
+                cartItems.appendChild(li);
+            });
+
+            cartCount.textContent = totalItems;
+            if (totalItems > 0) {
+                cartCount.style.transform = 'scale(1)';
+            } else {
+                cartCount.style.transform = 'scale(0)';
+                cartItems.innerHTML = '<li class="text-center text-gray-500 py-4">Votre panier est vide</li>';
+            }
+
+            cartTotal.textContent = totalPrice + ' DA';
+        }
+
+        function addToCart(name, price) {
+            let existingItem = cart.find(item => item.name === name);
+            
+            if (existingItem) {
+                existingItem.qty += currentQty;
+            } else {
+                cart.push({name: name, price: price, qty: currentQty});
+            }
+
+            updateCartUI();
+            
+            currentQty = 1;
+            document.getElementById('display-qty').textContent = currentQty;
+            
+            const btn = document.getElementById('cart-btn');
+            btn.classList.add('scale-110');
+            setTimeout(() => btn.classList.remove('scale-110'), 200);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function openModal() {
+            const modal = document.getElementById('cart-modal');
+            modal.classList.remove('hidden');
+            modal.firstElementChild.classList.add('modal-content-enter');
+            if(cart.length === 0) updateCartUI();
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('cart-modal');
+            modal.classList.add('hidden');
+        }
+
+        function submitOrder(e) {
+            e.preventDefault();
+            if(cart.length === 0) {
+                alert("Votre panier est vide !");
+                return;
+            }
+            alert("Commande validée avec succès ! (Simulation)");
+            cart = [];
+            updateCartUI();
+            closeModal();
+            e.target.reset();
+        }
+    </script>
+</body>
+</html> 
