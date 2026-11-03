@@ -46,28 +46,23 @@
     
     <style>
         body { background-color: #fcfcfc; }
-        
         .modal-enter { animation: fadeIn 0.2s ease-out forwards; }
         .modal-content-enter { animation: slideDownMobile 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
-        @media (min-width: 768px) {
-            .modal-content-enter { animation: popInDesktop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        }
-
+        @media (min-width: 768px) { .modal-content-enter { animation: popInDesktop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideDownMobile { from { transform: translateY(-100%); } to { transform: translateY(0); } }
         @keyframes popInDesktop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        
         .btn-tactile { transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1); }
         .btn-tactile:active { transform: scale(0.95); } 
         input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        
         .select-chevron {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
             background-position: right 1rem center;
             background-repeat: no-repeat;
             background-size: 1.2em 1.2em;
         }
+        /* Style pour les champs en cours de chargement */
+        .loading-field { opacity: 0.6; pointer-events: none; }
     </style>
 </head> 
 <body class="text-gray-800 antialiased min-h-screen flex flex-col font-sans">
@@ -76,11 +71,9 @@
     <header class="bg-white shadow-sm py-2 sticky top-0 z-40"> 
         <div class="max-w-5xl mx-auto px-4 flex justify-between items-center relative">
             <div class="w-10"></div>
-            
             <div class="absolute left-1/2 transform -translate-x-1/2">
                 <img src="https://ik.imagekit.io/vexaccess/IMG_7235.JPG?updatedAt=1793621876079" alt="Logo Vex Store" class="h-8 w-auto">
             </div>
-            
             <button id="cart-btn" onclick="openModal()" class="relative p-2 text-eva-burgundy hover:bg-eva-pinkLight rounded-full transition btn-tactile">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -185,82 +178,25 @@
                     DESTINATION • الوجهة
                 </div>
                 
+                <!-- Zone Dynamique pour Wilayas, Communes et Livraison -->
                 <div class="space-y-3">
-                    <select id="wilaya" required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy text-gray-600 appearance-none select-chevron"> 
-                        <option value="" disabled selected>Wilaya • الولاية</option>
-                        <option value="1">01 - Adrar</option>
-                        <option value="2">02 - Chlef</option>
-                        <option value="3">03 - Laghouat</option>
-                        <option value="4">04 - Oum El Bouaghi</option>
-                        <option value="5">05 - Batna</option>
-                        <option value="6">06 - Béjaïa</option>
-                        <option value="7">07 - Biskra</option>
-                        <option value="8">08 - Béchar</option>
-                        <option value="9">09 - Blida</option>
-                        <option value="10">10 - Bouira</option>
-                        <option value="11">11 - Tamanrasset</option>
-                        <option value="12">12 - Tébessa</option>
-                        <option value="13">13 - Tlemcen</option>
-                        <option value="14">14 - Tiaret</option>
-                        <option value="15">15 - Tizi Ouzou</option>
-                        <option value="16">16 - Alger</option>
-                        <option value="17">17 - Djelfa</option>
-                        <option value="18">18 - Jijel</option>
-                        <option value="19">19 - Sétif</option>
-                        <option value="20">20 - Saïda</option>
-                        <option value="21">21 - Skikda</option>
-                        <option value="22">22 - Sidi Bel Abbès</option>
-                        <option value="23">23 - Annaba</option>
-                        <option value="24">24 - Guelma</option>
-                        <option value="25">25 - Constantine</option>
-                        <option value="26">26 - Médéa</option>
-                        <option value="27">27 - Mostaganem</option>
-                        <option value="28">28 - M'Sila</option>
-                        <option value="29">29 - Mascara</option>
-                        <option value="30">30 - Ouargla</option>
-                        <option value="31">31 - Oran</option>
-                        <option value="32">32 - El Bayadh</option>
-                        <option value="33">33 - Illizi</option>
-                        <option value="34">34 - Bordj Bou Arreridj</option>
-                        <option value="35">35 - Boumerdès</option>
-                        <option value="36">36 - El Tarf</option>
-                        <option value="37">37 - Tindouf</option>
-                        <option value="38">38 - Tissemsilt</option>
-                        <option value="39">39 - El Oued</option>
-                        <option value="40">40 - Khenchela</option>
-                        <option value="41">41 - Souk Ahras</option>
-                        <option value="42">42 - Tipaza</option>
-                        <option value="43">43 - Mila</option>
-                        <option value="44">44 - Aïn Defla</option>
-                        <option value="45">45 - Naâma</option>
-                        <option value="46">46 - Aïn Témouchent</option>
-                        <option value="47">47 - Ghardaïa</option>
-                        <option value="48">48 - Relizane</option>
-                        <option value="49">49 - Timimoun</option>
-                        <option value="50">50 - Bordj Badji Mokhtar</option>
-                        <option value="51">51 - Ouled Djellal</option>
-                        <option value="52">52 - Béni Abbès</option>
-                        <option value="53">53 - In Salah</option>
-                        <option value="54">54 - In Guezzam</option>
-                        <option value="55">55 - Touggourt</option>
-                        <option value="56">56 - Djanet</option>
-                        <option value="57">57 - El M'Ghair</option>
-                        <option value="58">58 - El Meniaa</option>
+                    <select id="wilaya" onchange="loadCommunesAndOffices()" required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy text-gray-600 appearance-none select-chevron"> 
+                        <option value="" disabled selected>Chargement des wilayas...</option>
+                    </select>
+                    
+                    <select id="commune" disabled required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy text-gray-600 appearance-none select-chevron">
+                        <option value="" disabled selected>Sélectionnez d'abord une wilaya</option>
                     </select>
 
-                    <input type="text" id="commune" placeholder="Commune • البلدية" required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy placeholder-gray-400">
-                </div>
-
-                <div class="flex items-center gap-2 mb-3 mt-6 text-xs md:text-sm font-bold text-gray-800 uppercase tracking-wider">
-                    <div class="w-6 h-px bg-gray-800"></div>
-                    LIVRAISON • التوصيل
-                </div>
-                
-                <div class="space-y-3">
-                    <select id="delivery_type" required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy text-gray-600 appearance-none select-chevron"> 
+                    <select id="delivery_type" onchange="toggleStopdesk()" required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy text-gray-600 appearance-none select-chevron"> 
                         <option value="" disabled selected>Mode de livraison • طريقة التوصيل</option>
                         <option value="express">À Domicile • إلى باب المنزل</option>
                         <option value="stopdesk">Point Relais (Stopdesk) • مكتب التوصيل</option>
+                    </select>
+
+                    <!-- Champ Stopdesk (caché par défaut) -->
+                    <select id="stopdesk" disabled class="hidden w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy text-gray-600 appearance-none select-chevron">
+                        <option value="" disabled selected>Sélectionnez un point relais</option>
                     </select>
                 </div>
                 
@@ -279,9 +215,12 @@
 
     <!-- Scripts -->
     <script>
+        const API_BASE_URL = 'https://vexback.onrender.com/api'; // Lien vers ton serveur Render
         let cart = [];
         let currentQty = 1;
+        let cachedOffices = []; // Stocke les bureaux Stopdesk de la wilaya sélectionnée
 
+        // --- Logique du Panier ---
         function updateDisplayQty(change) {
             currentQty += change;
             if (currentQty < 1) currentQty = 1;
@@ -301,48 +240,35 @@
             const cartCount = document.getElementById('cart-count');
             const cartItems = document.getElementById('cart-items');
             const cartTotal = document.getElementById('cart-total');
-
             let totalItems = 0;
             let totalPrice = 0;
 
             cartItems.innerHTML = '';
-            
             cart.forEach((item, index) => {
                 totalItems += item.qty;
                 totalPrice += (item.price * item.qty);
-
                 const li = document.createElement('li');
                 li.className = 'relative flex gap-4 bg-white p-3.5 md:p-4 rounded-3xl border border-gray-200 shadow-sm';
-                
                 li.innerHTML = `
                     <img src="${item.img}" alt="${item.name}" class="w-16 h-20 md:w-20 md:h-24 object-cover rounded-2xl shadow-sm border border-gray-100">
                     <div class="flex-1 flex flex-col justify-between py-0.5">
-                        
                         <div class="flex justify-between items-start">
                             <div class="pr-6">
                                 <h3 class="font-bold text-sm md:text-base text-gray-900 leading-tight">${item.name}</h3>
                                 <p class="text-xs text-gray-500 mt-1">Édition standard</p>
                             </div>
-                            <!-- Bouton Corbeille -->
                             <button type="button" onclick="removeFromCart(${index})" class="absolute top-4 right-4 text-gray-400 hover:text-black transition p-1">
-                                <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                </svg>
+                                <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
                         </div>
-                        
                         <div class="flex justify-between items-end mt-2">
-                            <!-- Sélecteur de quantité du panier -->
                             <div class="flex items-center bg-gray-50 rounded-xl border border-gray-200 overflow-hidden h-8 md:h-9">
                                 <button type="button" onclick="updateCartItemQty(${index}, -1)" class="px-3 text-gray-600 hover:bg-gray-200 h-full flex items-center justify-center font-medium transition">-</button>
                                 <span class="px-2 font-bold text-sm min-w-[1.5rem] text-center">${item.qty}</span>
                                 <button type="button" onclick="updateCartItemQty(${index}, 1)" class="px-3 text-gray-600 hover:bg-gray-200 h-full flex items-center justify-center font-medium transition">+</button>
                             </div>
-                            
-                            <!-- Prix -->
                             <div class="text-right leading-none">
-                                <span class="font-bold text-gray-900 text-lg md:text-xl">${item.price * item.qty}</span>
-                                <br>
+                                <span class="font-bold text-gray-900 text-lg md:text-xl">${item.price * item.qty}</span><br>
                                 <span class="text-[10px] md:text-xs font-bold text-gray-900 uppercase">DZD</span>
                             </div>
                         </div>
@@ -352,34 +278,21 @@
             });
 
             cartCount.textContent = totalItems;
-            if (totalItems > 0) {
-                cartCount.style.transform = 'scale(1)';
-            } else {
-                cartCount.style.transform = 'scale(0)';
-                cartItems.innerHTML = '<li class="text-center text-gray-500 py-6 text-sm font-medium">Votre panier est vide</li>';
-            }
-
+            cartCount.style.transform = totalItems > 0 ? 'scale(1)' : 'scale(0)';
+            if (totalItems === 0) cartItems.innerHTML = '<li class="text-center text-gray-500 py-6 text-sm font-medium">Votre panier est vide</li>';
             cartTotal.textContent = totalPrice + ' DZD';
         }
 
         function addToCart(name, price, img) {
             let existingItem = cart.find(item => item.name === name);
-            
-            if (existingItem) {
-                existingItem.qty += currentQty;
-            } else {
-                cart.push({name: name, price: price, qty: currentQty, img: img});
-            }
-
+            if (existingItem) { existingItem.qty += currentQty; } 
+            else { cart.push({name: name, price: price, qty: currentQty, img: img}); }
             updateCartUI();
-            
             currentQty = 1;
             document.getElementById('display-qty').textContent = currentQty;
-            
             const btn = document.getElementById('cart-btn');
             btn.classList.add('scale-110');
             setTimeout(() => btn.classList.remove('scale-110'), 200);
-            
             openModal();
         }
 
@@ -405,6 +318,99 @@
             modal.classList.remove('flex');
         }
 
+        // --- Logique Dynamique des Wilayas, Communes & Stopdesk ---
+
+        // 1. Charger les Wilayas au démarrage
+        document.addEventListener("DOMContentLoaded", () => {
+            fetch(`${API_BASE_URL}/wilayas`)
+                .then(res => res.json())
+                .then(data => {
+                    const select = document.getElementById('wilaya');
+                    select.innerHTML = '<option value="" disabled selected>Wilaya • الولاية</option>';
+                    // On s'adapte à la structure JSON retournée par Zimou (généralement data: [...])
+                    const wilayasArray = data.data || data; 
+                    wilayasArray.forEach(w => {
+                        const option = document.createElement('option');
+                        option.value = w.id || w.name; // Utilise l'ID si dispo, sinon le nom
+                        option.textContent = w.name || w.nom || `Wilaya ${w.id}`;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(err => {
+                    console.error("Impossible de charger les wilayas:", err);
+                    document.getElementById('wilaya').innerHTML = '<option value="" disabled>Erreur de chargement</option>';
+                });
+        });
+
+        // 2. Charger les Communes et Stopdesks quand on choisit une Wilaya
+        function loadCommunesAndOffices() {
+            const wilayaId = document.getElementById('wilaya').value;
+            const communeSelect = document.getElementById('commune');
+            
+            communeSelect.innerHTML = '<option value="" disabled selected>Chargement...</option>';
+            communeSelect.disabled = true;
+
+            // Récupérer les communes
+            fetch(`${API_BASE_URL}/communes/${wilayaId}`)
+                .then(res => res.json())
+                .then(data => {
+                    communeSelect.innerHTML = '<option value="" disabled selected>Commune • البلدية</option>';
+                    const communesArray = data.data || data;
+                    communesArray.forEach(c => {
+                        const option = document.createElement('option');
+                        option.value = c.id || c.name;
+                        option.textContent = c.name || c.nom;
+                        communeSelect.appendChild(option);
+                    });
+                    communeSelect.disabled = false;
+                });
+
+            // Récupérer les stopdesks de la wilaya en arrière-plan
+            fetch(`${API_BASE_URL}/offices/${wilayaId}`)
+                .then(res => res.json())
+                .then(data => {
+                    cachedOffices = data.data || data;
+                    populateStopdesks();
+                });
+        }
+
+        // 3. Afficher le champ Stopdesk si Point Relais est sélectionné
+        function toggleStopdesk() {
+            const deliveryType = document.getElementById('delivery_type').value;
+            const stopdeskSelect = document.getElementById('stopdesk');
+
+            if (deliveryType === 'stopdesk') {
+                stopdeskSelect.classList.remove('hidden');
+                stopdeskSelect.disabled = false;
+                stopdeskSelect.required = true;
+                populateStopdesks();
+            } else {
+                stopdeskSelect.classList.add('hidden');
+                stopdeskSelect.disabled = true;
+                stopdeskSelect.required = false;
+                stopdeskSelect.value = "";
+            }
+        }
+
+        // 4. Remplir le menu des Stopdesks
+        function populateStopdesks() {
+            const stopdeskSelect = document.getElementById('stopdesk');
+            stopdeskSelect.innerHTML = '<option value="" disabled selected>Sélectionnez un point relais</option>';
+            
+            if (cachedOffices.length === 0) {
+                stopdeskSelect.innerHTML = '<option value="" disabled selected>Aucun point relais disponible</option>';
+                return;
+            }
+
+            cachedOffices.forEach(office => {
+                const option = document.createElement('option');
+                option.value = office.id; // Zimou a besoin de l'ID du stopdesk
+                option.textContent = office.name || office.address || `Bureau ${office.id}`;
+                stopdeskSelect.appendChild(option);
+            });
+        }
+
+        // --- Soumission de la commande ---
         function submitOrder(e) {
             e.preventDefault();
             if(cart.length === 0) {
@@ -412,14 +418,14 @@
                 return;
             }
 
-            // On récupère toutes les informations, y compris le choix de livraison
             const orderData = {
                 nom: document.getElementById('nom').value,
                 prenom: document.getElementById('prenom').value,
                 telephone: document.getElementById('telephone').value,
                 wilaya: document.getElementById('wilaya').value,
                 commune: document.getElementById('commune').value,
-                delivery_type: document.getElementById('delivery_type').value, // Nouveau champ !
+                delivery_type: document.getElementById('delivery_type').value,
+                stopdesk: document.getElementById('stopdesk').value,
                 cart: cart,
                 total: cart.reduce((sum, item) => sum + (item.price * item.qty), 0)
             };
@@ -429,12 +435,9 @@
             btn.textContent = "Traitement en cours...";
             btn.disabled = true;
 
-            // Envoi au backend sur Render
-            fetch('https://vexback.onrender.com/api/order', {
+            fetch(`${API_BASE_URL}/order`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
             })
             .then(response => response.json())
@@ -445,6 +448,7 @@
                     updateCartUI();
                     closeModal();
                     e.target.reset();
+                    toggleStopdesk(); // Cache le stopdesk à la réinitialisation
                 } else {
                     alert("❌ Erreur: " + data.message);
                 }
