@@ -356,58 +356,58 @@
         }
 
         function submitOrder(e) {
-    e.preventDefault();
-    if(cart.length === 0) {
-        alert("Votre panier est vide !");
-        return;
-    }
+            e.preventDefault();
+            if(cart.length === 0) {
+                alert("Votre panier est vide !");
+                return;
+            }
 
-    // Récupération des informations du client
-    const orderData = {
-        nom: document.getElementById('nom').value,
-        prenom: document.getElementById('prenom').value,
-        telephone: document.getElementById('telephone').value,
-        wilaya: document.getElementById('wilaya').value,
-        commune: document.getElementById('commune').value,
-        cart: cart,
-        total: cart.reduce((sum, item) => sum + (item.price * item.qty), 0)
-    };
+            // Récupération des informations du client
+            const orderData = {
+                nom: document.getElementById('nom').value,
+                prenom: document.getElementById('prenom').value,
+                telephone: document.getElementById('telephone').value,
+                wilaya: document.getElementById('wilaya').value,
+                commune: document.getElementById('commune').value,
+                cart: cart,
+                total: cart.reduce((sum, item) => sum + (item.price * item.qty), 0)
+            };
 
-    // Changer le texte du bouton pendant le chargement (optionnel mais cool)
-    const btn = e.target.querySelector('button[type="submit"]');
-    const originalText = btn.textContent;
-    btn.textContent = "Traitement en cours...";
-    btn.disabled = true;
+            // Changer le texte du bouton pendant le chargement
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            btn.textContent = "Traitement en cours...";
+            btn.disabled = true;
 
-    // Envoi des données au backend (Pense à remplacer localhost par ton lien Render final)
-    fetch('http://localhost:3000/api/order', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if(data.success) {
-            alert("✅ Commande validée avec succès !");
-            cart = [];
-            updateCartUI();
-            closeModal();
-            e.target.reset();
-        } else {
-            alert("❌ Erreur: " + data.message);
-        }
-    })
-    .catch(error => {
-        console.error("Erreur de connexion :", error);
-        alert("❌ Impossible de contacter le serveur.");
-    })
-    .finally(() => {
-        btn.textContent = originalText;
-        btn.disabled = false;
-    });
-} 
+            // Envoi des données au backend sur Render
+            fetch('https://vexback.onrender.com/api/order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    alert("✅ Commande validée avec succès !");
+                    cart = [];
+                    updateCartUI();
+                    closeModal();
+                    e.target.reset();
+                } else {
+                    alert("❌ Erreur: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Erreur de connexion :", error);
+                alert("❌ Impossible de contacter le serveur.");
+            })
+            .finally(() => {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            });
+        } 
     </script>
 </body>
 </html> 
