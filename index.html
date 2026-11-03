@@ -474,16 +474,15 @@
             stopdeskOptions.forEach(opt => {
                 let officeId = opt.office_id || (opt.office && opt.office.id) || opt.id;
                 let price = opt.price || opt.delivery_fee || opt.delivery_price || opt.cost || 0;
-                let cleanAddress = (opt.office && opt.office.address) || opt.address || "";
-                
-                // L'EXTRACTEUR ULTIME : On lit tout le texte de la réponse pour y trouver le partenaire
                 let objStr = JSON.stringify(opt).toLowerCase();
-                let cleanName = "Point Relais"; 
+                let cleanName = "Point Relais";
                 
-                // 1. On cherche d'abord les mots-clés dans tout le texte brut (infaillible)
+                // L'EXTRACTEUR ULTIME : Scanner tout le texte brut pour y trouver les noms connus
                 if (objStr.includes("yalidine")) cleanName = "Yalidine Express";
                 else if (objStr.includes("zr express")) cleanName = "ZR Express";
                 else if (objStr.includes("maystro")) cleanName = "Maystro Delivery";
+                else if (objStr.includes("zimou express")) cleanName = "Zimou Express";
+                else if (objStr.includes("partenaire point relais")) cleanName = "Partenaire Point Relais";
                 else if (objStr.includes("noest") || objStr.includes("nord ouest")) cleanName = "Noest Express";
                 else if (objStr.includes("anderson")) cleanName = "Anderson Express";
                 else if (objStr.includes("world express")) cleanName = "World Express";
@@ -492,25 +491,23 @@
                 else if (objStr.includes("ecotrack")) cleanName = "Ecotrack";
                 else if (objStr.includes("gazelle")) cleanName = "Gazelle Express";
                 else {
-                    // 2. Si on ne connait pas le transporteur, on tente de récupérer le nom fourni par l'API
-                    let apiName = opt.partner_name || opt.carrier_name || opt.office?.partner?.name || opt.office?.carrier?.name || opt.partner?.name || opt.carrier?.name || opt.office?.name || opt.name || "";
-                    
-                    if (apiName.includes('(')) {
-                        let parts = apiName.split('(');
-                        apiName = parts[0].trim();
-                        if (!cleanAddress && parts[1]) {
-                            cleanAddress = parts[1].replace(')', '').trim();
-                        }
-                    }
-                    
-                    // On nettoie les villes
-                    apiName = apiName.replace(/\s+(alger|oran|constantine|batna|blida|sétif|annaba|tlemcen|tizi ouzou|bejaia|chlef|djelfa|skikda|sidi bel abbes|biskra|tebessa|el oued|mostaganem|msila|medea|ouargla|relizane|boumerdes|tipaza|mila|ain defla|ghardaia|saida|laghouat|um el bouaghi|bechar|jijel|bordj bou arreridj|el tarf|tindouf|tissemsilt|khenchela|souk ahras|naama|ain temouchent)$/i, '').trim();
-
-                    // Si ce n'est pas le mot générique, on le garde
-                    if (apiName && !apiName.toLowerCase().includes("stopdesk") && !apiName.toLowerCase().includes("stop desk")) {
-                        cleanName = apiName;
-                    }
+                    let apiName = opt.partner_name || opt.carrier_name || opt.office?.partner?.name || opt.office?.carrier?.name || opt.partner?.name || opt.carrier?.name || opt.office?.name || opt.name || "Point Relais";
+                    if (apiName.includes('(')) apiName = apiName.split('(')[0].trim();
+                    if (!apiName.toLowerCase().includes("stopdesk") && !apiName.toLowerCase().includes("stop desk")) cleanName = apiName;
                 }
+
+                // Pour récupérer proprement l'adresse (elle est souvent entre parenthèses dans le nom ou dans office.address)
+                let cleanAddress = "";
+                if (opt.office && opt.office.address) cleanAddress = opt.office.address;
+                else if (opt.address) cleanAddress = opt.address;
+                
+                let rawName = opt.name || opt.office?.name || "";
+                if (rawName.includes('(') && !cleanAddress) {
+                    cleanAddress = rawName.split('(')[1].replace(')', '').trim();
+                }
+
+                // On supprime les suffixes de noms de villes
+                cleanName = cleanName.replace(/\s+(alger|oran|constantine|batna|blida|sétif|annaba|tlemcen|tizi ouzou|bejaia|chlef|djelfa|skikda|sidi bel abbes|biskra|tebessa|el oued|mostaganem|msila|medea|ouargla|relizane|boumerdes|tipaza|mila|ain defla|ghardaia|saida|laghouat|um el bouaghi|bechar|jijel|bordj bou arreridj|el tarf|tindouf|tissemsilt|khenchela|souk ahras|naama|ain temouchent)$/i, '').trim();
 
                 let displayName = `${cleanName} - ${price} DA`;
                 const uniqueDomId = 'stopdesk_' + Math.random().toString(36).substr(2, 9);
@@ -518,7 +515,6 @@
                 const wrapper = document.createElement('div');
                 wrapper.className = "mb-2 last:mb-0";
                 
-                // MÉTHODE HTML NATIVE (Le label enveloppe le input radio pour un clic parfait partout)
                 wrapper.innerHTML = `
                     <label class="block relative cursor-pointer group select-none m-0">
                         <input type="radio" name="selected_stopdesk" value='${JSON.stringify({id: officeId, address: cleanAddress, name: cleanName, price: price})}' class="peer sr-only" onchange="document.getElementById('stopdesk_val').value = this.value">
