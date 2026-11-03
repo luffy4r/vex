@@ -214,7 +214,7 @@
                         <option value="57">57 - El M'Ghair</option><option value="58">58 - El Meniaa</option>
                     </select>
                     
-                    <select id="commune" disabled required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy text-gray-600 appearance-none select-chevron">
+                    <select id="commune" onchange="populateStopdesks()" disabled required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy text-gray-600 appearance-none select-chevron"> 
                         <option value="" disabled selected>Commune • البلدية</option>
                     </select>
                 </div>
@@ -449,29 +449,47 @@
         function populateStopdesks() {
             const stopdeskSelect = document.getElementById('stopdesk');
             const stopdeskHint = document.getElementById('stopdesk-hint');
+            const selectedCommuneId = document.getElementById('commune').value;
+
             stopdeskSelect.innerHTML = '<option value="" disabled selected>Choisissez un point relais</option>';
             
+            // 1. Vérifier si une commune a été choisie
+            if (!selectedCommuneId) {
+                stopdeskSelect.innerHTML = '<option value="" disabled selected>Veuillez d\'abord sélectionner une commune</option>';
+                stopdeskHint.textContent = "Sélectionnez une commune pour voir les points relais";
+                return;
+            }
+
+            // 2. Vérifier si on a bien reçu les bureaux de la wilaya
             if (cachedOffices.length === 0) {
                 stopdeskSelect.innerHTML = '<option value="" disabled selected>Aucun point relais disponible</option>';
                 stopdeskHint.textContent = "Aucun point relais dans cette wilaya";
                 return;
             }
 
-            stopdeskHint.textContent = `${cachedOffices.length} point(s) relais disponible(s)`;
+            // 3. LE FILTRE MAGIQUE : On ne garde QUE les bureaux de la commune sélectionnée
+            const filteredOffices = cachedOffices.filter(office => {
+                return String(office.commune_id) === String(selectedCommuneId) || String(office.commune) === String(selectedCommuneId);
+            });
+
+            // 4. Si la commune n'a aucun bureau
+            if (filteredOffices.length === 0) {
+                stopdeskSelect.innerHTML = '<option value="" disabled selected>Aucun bureau dans cette commune</option>';
+                stopdeskHint.textContent = "Aucun point relais disponible dans cette commune";
+                return;
+            }
+
+            // 5. Afficher les bureaux trouvés pour cette commune
+            stopdeskHint.textContent = `${filteredOffices.length} point(s) relais disponible(s)`;
             
-            cachedOffices.forEach(office => {
+            filteredOffices.forEach(office => {
                 const option = document.createElement('option');
                 option.value = office.id; 
                 
-                // Nouvelle logique : On combine le nom et l'adresse pour être précis
                 let displayName = "";
-                
-                // Si l'API donne une adresse et un nom
                 if (office.address && office.name && office.address !== office.name) {
                     displayName = `${office.name} - ${office.address}`;
-                } 
-                // Sinon on prend ce qui est disponible
-                else {
+                } else {
                     displayName = office.address || office.name || `Bureau n°${office.id}`;
                 }
                 
