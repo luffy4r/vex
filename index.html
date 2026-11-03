@@ -455,11 +455,16 @@
             const stopdeskHint = document.getElementById('stopdesk-hint');
             const hiddenInput = document.getElementById('stopdesk_val');
             
+            // DOUBLE SÉCURITÉ : on récupère l'ID exact de la commune sélectionnée
+            const selectedCommuneId = document.getElementById('commune').value;
+            
             hiddenInput.value = ""; 
             container.innerHTML = '';
             
-            // On ne filtre plus : tous les résultats de /store-stopdesks SONT des stopdesks
-            const stopdeskOptions = cachedPricing;
+            // On filtre pour ne garder STRICTEMENT que les bureaux de la commune sélectionnée
+            const stopdeskOptions = cachedPricing.filter(opt => {
+                return String(opt.commune_id) === String(selectedCommuneId);
+            });
 
             if (!stopdeskOptions || stopdeskOptions.length === 0) {
                 container.innerHTML = '<div class="text-sm text-gray-500 p-4 text-center bg-white rounded-xl border border-dashed border-gray-300">Aucun bureau Stopdesk dans cette commune.<br><span class="text-[11px] mt-1 block">Veuillez choisir la livraison à domicile.</span></div>';
@@ -585,4 +590,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
