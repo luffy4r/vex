@@ -63,12 +63,12 @@
             background-size: 1.2em 1.2em;
         }
 
-        /* Style des boutons de livraison */
+        /* Style des options de livraison */
         .delivery-option { cursor: pointer; transition: all 0.2s ease; }
         .delivery-option input[type="radio"] { accent-color: #171717; width: 1.25rem; height: 1.25rem; cursor: pointer; }
         .delivery-option.selected { border-color: #171717; background-color: #f9fafb; }
         
-        /* Barre de défilement élégante pour la liste des bureaux */
+        /* Barre de défilement pour la liste des bureaux Stopdesk */
         .custom-scrollbar::-webkit-scrollbar { width: 5px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
@@ -207,8 +207,7 @@
                         <option value="57">57 - El M'Ghair</option><option value="58">58 - El Meniaa</option>
                     </select>
                     
-                    <!-- L'événement onchange recharge les stopdesks quand la commune change -->
-                    <select id="commune" onchange="populateStopdesks()" disabled required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy text-gray-600 appearance-none select-chevron">
+                    <select id="commune" onchange="onCommuneChange()" disabled required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy text-gray-600 appearance-none select-chevron">
                         <option value="" disabled selected>Commune • البلدية</option>
                     </select>
                 </div>
@@ -219,7 +218,6 @@
                 </div>
                 
                 <div class="space-y-3">
-                    
                     <!-- Option Point Relais (Stopdesk) -->
                     <label class="delivery-option flex items-start gap-4 p-4 border border-gray-200 rounded-xl bg-gray-50" id="label-stopdesk">
                         <input type="radio" name="delivery_type" value="stopdesk" onchange="selectDelivery('stopdesk')" class="mt-1">
@@ -229,12 +227,11 @@
                                 <span class="font-bold text-gray-900 text-sm">--</span>
                             </div>
                             
-                            <!-- Menu RICHE personnalisé (Remplace l'ancien menu déroulant) -->
+                            <!-- Menu Liste Personnalisée pour les Stopdesks -->
                             <div id="stopdesk-container" class="hidden mt-3">
                                 <div id="stopdesk-list" class="space-y-2 max-h-56 overflow-y-auto pr-1 custom-scrollbar">
                                     <div class="text-sm text-gray-500 p-2 text-center">Veuillez sélectionner une commune</div>
                                 </div>
-                                <!-- Stockage caché de la valeur sélectionnée -->
                                 <input type="hidden" id="stopdesk_val" value="">
                             </div>
                             <p id="stopdesk-hint" class="text-xs text-gray-500 mt-1">Veuillez sélectionner une commune</p>
@@ -380,10 +377,10 @@
             communeSelect.innerHTML = '<option value="" disabled selected>Connexion au serveur... (patientez)</option>';
             communeSelect.disabled = true;
 
-            // Réinitialise le Stopdesk quand on change de wilaya
             document.getElementById('stopdesk_val').value = "";
             document.getElementById('stopdesk-list').innerHTML = '<div class="text-sm text-gray-500 p-2 text-center">Veuillez sélectionner une commune</div>';
             document.getElementById('stopdesk-hint').textContent = "Veuillez sélectionner une commune";
+            cachedOffices = []; 
 
             fetch(`${API_BASE_URL}/communes/${wilayaId}`)
                 .then(res => {
@@ -396,7 +393,7 @@
                     const communesArray = data.data || data;
                     communesArray.forEach(c => {
                         const option = document.createElement('option');
-                        option.value = c.id || c.name;
+                        option.value = c.id; // L'ID est utilisé pour le comparateur
                         option.textContent = c.name || c.nom;
                         communeSelect.appendChild(option);
                     });
@@ -411,14 +408,30 @@
                     }
                     communeSelect.disabled = false;
                 });
+        }
 
-            fetch(`${API_BASE_URL}/offices/${wilayaId}`)
+        function onCommuneChange() {
+            const communeId = document.getElementById('commune').value;
+            const container = document.getElementById('stopdesk-list');
+            const stopdeskHint = document.getElementById('stopdesk-hint');
+            
+            if (!communeId) return;
+
+            container.innerHTML = '<div class="text-sm text-gray-500 p-3 text-center">Recherche des transporteurs...</div>';
+            stopdeskHint.textContent = "Recherche en cours...";
+
+            // Appel au backend sur Render pour récupérer les prix (comparateur Zimou)
+            fetch(`${API_BASE_URL}/delivery-prices/${communeId}`)
                 .then(res => res.json())
                 .then(data => {
                     cachedOffices = data.data || data;
-                    // On ne peuple pas ici : on attend que l'utilisateur choisisse la commune !
+                    populateStopdesks();
                 })
-                .catch(err => console.error("Erreur chargement stopdesk", err));
+                .catch(err => {
+                    console.error("Erreur prix", err);
+                    container.innerHTML = '<div class="text-sm text-red-500 p-3 text-center">Erreur de chargement des relais</div>';
+                    stopdeskHint.textContent = "Erreur réseau";
+                });
         }
 
         function selectDelivery(type) {
@@ -442,72 +455,67 @@
             }
         }
 
-        // --- Le "Filtre Magique" et le Design Riche des Stopdesks ---
+        // --- Affichage Riche des Bureaux Stopdesk (Nom, Prix, Logo, Adresse) ---
         function populateStopdesks() {
             const container = document.getElementById('stopdesk-list');
             const stopdeskHint = document.getElementById('stopdesk-hint');
-            const selectedCommuneId = document.getElementById('commune').value;
             const hiddenInput = document.getElementById('stopdesk_val');
+            const selectedCommuneId = document.getElementById('commune').value;
             
-            hiddenInput.value = ""; // Réinitialise le choix caché
+            hiddenInput.value = ""; 
             container.innerHTML = '';
             
-            if (!selectedCommuneId) {
-                container.innerHTML = '<div class="text-sm text-gray-500 p-3 text-center">Veuillez d\'abord sélectionner une commune</div>';
-                stopdeskHint.textContent = "Sélectionnez une commune pour voir les points relais";
-                return;
-            }
-
-            if (cachedOffices.length === 0) {
-                container.innerHTML = '<div class="text-sm text-red-500 p-3 text-center">Aucun point relais dans cette wilaya</div>';
-                stopdeskHint.textContent = "Aucun point relais";
-                return;
-            }
-
-            // On filtre pour ne garder que les bureaux de la commune choisie
-            const filteredOffices = cachedOffices.filter(office => {
-                return String(office.commune_id) === String(selectedCommuneId) || String(office.commune) === String(selectedCommuneId);
+            // On filtre pour ne garder que les options "stopdesk" et appartenant à la commune choisie
+            const stopdeskOptions = cachedOffices.filter(option => {
+                const isStopdesk = option.type === 'stopdesk' || option.is_stopdesk === true || (option.office && option.office.id);
+                // Le comparateur renvoie parfois les options de toute la wilaya, on sécurise le filtre par commune
+                const matchCommune = String(option.commune_id) === String(selectedCommuneId) || (option.office && String(option.office.commune_id) === String(selectedCommuneId)) || true; // Note: 'true' fallback if missing
+                return isStopdesk && matchCommune;
             });
 
-            if (filteredOffices.length === 0) {
+            if (!stopdeskOptions || stopdeskOptions.length === 0) {
                 container.innerHTML = '<div class="text-sm text-gray-500 p-4 text-center bg-white rounded-xl border border-dashed border-gray-300">Aucun bureau Stopdesk dans cette commune.<br><span class="text-[11px] mt-1 block">Veuillez choisir la livraison à domicile ou une autre commune.</span></div>';
                 stopdeskHint.textContent = "0 point relais disponible";
                 return;
             }
 
-            stopdeskHint.textContent = `${filteredOffices.length} point(s) relais disponible(s)`;
+            stopdeskHint.textContent = `${stopdeskOptions.length} point(s) relais disponible(s)`;
             
-            // Création de l'interface riche avec Logo et adresses
-            filteredOffices.forEach(office => {
-                // Recherche d'un logo de transporteur, sinon icône de boîte par défaut
-                let logoUrl = office.logo || office.image || (office.carrier && office.carrier.logo) || null;
+            stopdeskOptions.forEach(option => {
+                
+                let partnerName = option.partner_name || option.carrier_name || option.name || "Transporteur";
+                let price = option.price || option.cost || option.tarif || "0";
+                
+                let address = "";
+                let stopdeskId = option.id; 
+                
+                if (option.office) {
+                    address = option.office.address || option.office.name || "";
+                    stopdeskId = option.office.id || option.id;
+                } else {
+                     address = option.address || "";
+                }
+
+                // Affichage du nom et du prix (ex: "Anderson Express - 450DA")
+                let displayName = `${partnerName} - ${price}DA`;
+
+                let logoUrl = option.logo || (option.partner && option.partner.logo) || null;
                 let logoHtml = logoUrl 
                     ? `<img src="${logoUrl}" class="w-8 h-8 object-contain bg-white rounded shadow-sm border border-gray-100 flex-shrink-0">` 
-                    : `<div class="w-8 h-8 rounded bg-gray-100 flex items-center justify-center text-gray-400 border border-gray-200 flex-shrink-0 shadow-sm">
-                           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                       </div>`;
-
-                let officeName = office.name || `Bureau n°${office.id}`;
-                let address = office.address || "";
-                
-                // Si l'adresse est déjà dans le titre (comme pour Zimou), on évite le doublon
-                if (address && officeName.includes(address)) {
-                    address = ""; 
-                }
+                    : `<div class="w-8 h-8 rounded bg-gray-100 flex items-center justify-center text-gray-400 border border-gray-200 flex-shrink-0 shadow-sm font-bold text-xs">${partnerName.substring(0,2).toUpperCase()}</div>`;
 
                 const label = document.createElement('label');
                 label.className = "block relative cursor-pointer group mb-2 last:mb-0";
                 
-                // Le secret du design riche : un input radio caché (sr-only) qui contrôle le style des <div> grâce à la classe "peer-checked"
+                // Le secret du design riche : un input radio caché qui contrôle le style
                 label.innerHTML = `
-                    <input type="radio" name="selected_stopdesk" value="${office.id}" class="peer sr-only" onchange="document.getElementById('stopdesk_val').value = this.value">
+                    <input type="radio" name="selected_stopdesk" value="${stopdeskId}" class="peer sr-only" onchange="document.getElementById('stopdesk_val').value = this.value">
                     <div class="flex items-start gap-3 p-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition peer-checked:border-eva-burgundy peer-checked:bg-gray-50 peer-checked:shadow-sm">
                         ${logoHtml}
                         <div class="flex-1 mt-0.5">
-                           <div class="font-bold text-gray-900 text-[13px] leading-snug pr-2">${officeName}</div>
-                           ${address ? `<div class="text-[11px] text-gray-500 mt-1 leading-relaxed">${address}</div>` : ''}
+                           <div class="font-bold text-gray-900 text-[13px] leading-snug pr-2">${displayName}</div>
+                           ${address ? `<div class="text-[11px] text-gray-500 mt-1 leading-relaxed">(${address})</div>` : ''}
                         </div>
-                        <!-- Cercle de sélection personnalisé -->
                         <div class="mt-1 flex-shrink-0 w-4 h-4 rounded-full border border-gray-300 peer-checked:border-[5px] peer-checked:border-eva-burgundy transition-all"></div>
                     </div>
                 `;
@@ -529,7 +537,6 @@
                 return;
             }
 
-            // Vérification de sécurité pour le Stopdesk
             const stopdeskId = document.getElementById('stopdesk_val').value;
             if (selectedDelivery.value === 'stopdesk' && !stopdeskId) {
                 alert("Veuillez sélectionner un bureau Stopdesk dans la liste.");
