@@ -453,6 +453,7 @@
             const container = document.getElementById('stopdesk-list');
             const stopdeskHint = document.getElementById('stopdesk-hint');
             const hiddenInput = document.getElementById('stopdesk_val');
+            
             const selectedCommuneId = document.getElementById('commune').value;
             
             hiddenInput.value = ""; 
@@ -476,36 +477,27 @@
                 let price = opt.price || opt.delivery_fee || opt.delivery_price || opt.cost || 0;
                 let cleanAddress = (opt.office && opt.office.address) || opt.address || "";
                 
-                // SUPER EXTRACTEUR : Cherche le vrai nom de transporteur partout dans les données Zimou
+                // SUPER EXTRACTEUR DE NOM DE TRANSPORTEUR
                 let rawName = "Bureau Stopdesk";
-                const possibleCarriers = [
-                    opt.carrier?.name,
-                    opt.partner?.name,
-                    opt.delivery_company?.name,
-                    opt.delivery_type?.name,
-                    opt.carrier_name,
-                    opt.partner_name,
-                    opt.office?.carrier?.name,
-                    opt.office?.partner?.name,
-                    opt.office?.delivery_company?.name
-                ];
+                if (opt.partner_name) rawName = opt.partner_name;
+                else if (opt.carrier_name) rawName = opt.carrier_name;
+                else if (opt.carrier && opt.carrier.name) rawName = opt.carrier.name;
+                else if (opt.partner && opt.partner.name) rawName = opt.partner.name;
+                else if (opt.name && opt.name !== "Bureau Stopdesk") rawName = opt.name;
                 
-                for (const name of possibleCarriers) {
-                    if (name && typeof name === 'string' && name.toLowerCase() !== 'bureau stopdesk') {
-                        rawName = name;
-                        break;
-                    }
-                }
-                
-                // Si introuvable, on prend le nom du bureau
-                if (rawName === "Bureau Stopdesk" && opt.name && opt.name.toLowerCase() !== "bureau stopdesk") {
-                    rawName = opt.name;
-                }
-                if (rawName === "Bureau Stopdesk" && opt.office?.name && opt.office.name.toLowerCase() !== "bureau stopdesk") {
-                    rawName = opt.office.name;
+                // Si toujours introuvable, on force l'extraction via le texte brut
+                let objStr = JSON.stringify(opt).toLowerCase();
+                if (rawName === "Bureau Stopdesk" || rawName === "") {
+                    if (objStr.includes("yalidine")) rawName = "Yalidine Express";
+                    else if (objStr.includes("zr express")) rawName = "ZR Express";
+                    else if (objStr.includes("maystro")) rawName = "Maystro Delivery";
+                    else if (objStr.includes("noest")) rawName = "Noest Express";
+                    else if (objStr.includes("anderson")) rawName = "Anderson Express";
+                    else if (objStr.includes("world express")) rawName = "World Express";
+                    else if (objStr.includes("dhd")) rawName = "DHD Express";
                 }
 
-                // Nettoyage esthétique de l'adresse glissée dans le nom
+                // Nettoyage esthétique : Adresse souvent collée dans le nom avec des parenthèses
                 if (rawName.includes('(')) {
                     let parts = rawName.split('(');
                     rawName = parts[0].trim();
@@ -514,31 +506,29 @@
                     }
                 }
 
-                // Suppression des suffixes inutiles de villes ("ZR Express Alger" devient "ZR Express")
+                // Suppression des noms de villes en double
                 let cleanName = rawName.replace(/\s+(alger|oran|constantine|batna|blida|sétif|annaba|tlemcen|tizi ouzou|bejaia|chlef|djelfa|skikda|sidi bel abbes|biskra|tebessa|el oued|mostaganem|msila|medea|ouargla|relizane|boumerdes|tipaza|mila|ain defla|ghardaia|saida|laghouat|um el bouaghi|bechar|jijel|bordj bou arreridj|el tarf|tindouf|tissemsilt|khenchela|souk ahras|naama|ain temouchent)$/i, '').trim();
 
                 let displayName = `${cleanName} - ${price} DA`;
                 
-                // On crée un ID unique HTML pour lier nativement l'input et le label
-                const uniqueDomId = 'stopdesk_' + Math.random().toString(36).substr(2, 9);
-
                 const wrapper = document.createElement('div');
-                wrapper.className = "block relative mb-2 last:mb-0 select-none";
+                wrapper.className = "mb-2 last:mb-0";
                 
+                // MÉTHODE HTML NATIVE POUR LE CLIC (Le label enveloppe le input radio)
                 wrapper.innerHTML = `
-                    <input type="radio" name="selected_stopdesk" id="${uniqueDomId}" value='${JSON.stringify({id: officeId, address: cleanAddress, name: cleanName, price: price})}' class="peer sr-only" onchange="document.getElementById('stopdesk_val').value = this.value">
-                    
-                    <label for="${uniqueDomId}" class="flex items-start gap-3 p-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition w-full peer-checked:border-eva-burgundy peer-checked:bg-gray-50 peer-checked:shadow-sm cursor-pointer m-0">
-                        <div class="w-8 h-8 rounded bg-gray-100 flex items-center justify-center text-gray-700 border border-gray-200 flex-shrink-0 shadow-sm font-bold text-xs">📦</div>
-                        
-                        <div class="flex-1 mt-0.5">
-                           <div class="font-bold text-gray-900 text-[13px] leading-snug pr-2">${displayName}</div>
-                           ${cleanAddress ? `<div class="text-[11px] text-gray-500 mt-1 leading-relaxed">(${cleanAddress})</div>` : ''}
+                    <label class="block relative cursor-pointer group select-none m-0">
+                        <input type="radio" name="selected_stopdesk" value='${JSON.stringify({id: officeId, address: cleanAddress, name: cleanName, price: price})}' class="peer sr-only" onchange="document.getElementById('stopdesk_val').value = this.value">
+                        <div class="flex items-start gap-3 p-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition w-full peer-checked:border-eva-burgundy peer-checked:bg-gray-50 peer-checked:shadow-sm">
+                            <div class="w-8 h-8 rounded bg-gray-100 flex items-center justify-center text-gray-700 border border-gray-200 flex-shrink-0 shadow-sm font-bold text-xs">📦</div>
+                            <div class="flex-1 mt-0.5">
+                               <div class="font-bold text-gray-900 text-[13px] leading-snug pr-2">${displayName}</div>
+                               ${cleanAddress ? `<div class="text-[11px] text-gray-500 mt-1 leading-relaxed">(${cleanAddress})</div>` : ''}
+                            </div>
+                            <div class="mt-1 flex-shrink-0 w-4 h-4 rounded-full border border-gray-300 flex items-center justify-center peer-checked:border-[5px] peer-checked:border-eva-burgundy transition-all"></div>
                         </div>
-                        
-                        <div class="mt-1 flex-shrink-0 w-4 h-4 rounded-full border border-gray-300 flex items-center justify-center peer-checked:border-[5px] peer-checked:border-eva-burgundy transition-all"></div>
                     </label>
                 `;
+                
                 container.appendChild(wrapper);
             });
         }
@@ -623,4 +613,4 @@
         }
     </script>
 </body>
-</html>
+</html> 
