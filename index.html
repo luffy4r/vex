@@ -55,14 +55,29 @@
         .btn-tactile { transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1); }
         .btn-tactile:active { transform: scale(0.95); } 
         input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        
         .select-chevron {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
             background-position: right 1rem center;
             background-repeat: no-repeat;
             background-size: 1.2em 1.2em;
         }
-        /* Style pour les champs en cours de chargement */
-        .loading-field { opacity: 0.6; pointer-events: none; }
+
+        /* Style des boutons radio de livraison façon Eva's Touch */
+        .delivery-option {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .delivery-option input[type="radio"] {
+            accent-color: #171717;
+            width: 1.25rem;
+            height: 1.25rem;
+            cursor: pointer;
+        }
+        .delivery-option.selected {
+            border-color: #171717;
+            background-color: #f9fafb;
+        }
     </style>
 </head> 
 <body class="text-gray-800 antialiased min-h-screen flex flex-col font-sans">
@@ -178,26 +193,70 @@
                     DESTINATION • الوجهة
                 </div>
                 
-                <!-- Zone Dynamique pour Wilayas, Communes et Livraison -->
                 <div class="space-y-3">
+                    <!-- Liste des 58 wilayas intégrée directement pour plus de fiabilité -->
                     <select id="wilaya" onchange="loadCommunesAndOffices()" required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy text-gray-600 appearance-none select-chevron"> 
-                        <option value="" disabled selected>Chargement des wilayas...</option>
+                        <option value="" disabled selected>Wilaya • الولاية</option>
+                        <option value="1">1 - Adrar</option><option value="2">2 - Chlef</option><option value="3">3 - Laghouat</option><option value="4">4 - Oum El Bouaghi</option>
+                        <option value="5">5 - Batna</option><option value="6">6 - Béjaïa</option><option value="7">7 - Biskra</option><option value="8">8 - Béchar</option>
+                        <option value="9">9 - Blida</option><option value="10">10 - Bouira</option><option value="11">11 - Tamanrasset</option><option value="12">12 - Tébessa</option>
+                        <option value="13">13 - Tlemcen</option><option value="14">14 - Tiaret</option><option value="15">15 - Tizi Ouzou</option><option value="16">16 - Alger</option>
+                        <option value="17">17 - Djelfa</option><option value="18">18 - Jijel</option><option value="19">19 - Sétif</option><option value="20">20 - Saïda</option>
+                        <option value="21">21 - Skikda</option><option value="22">22 - Sidi Bel Abbès</option><option value="23">23 - Annaba</option><option value="24">24 - Guelma</option>
+                        <option value="25">25 - Constantine</option><option value="26">26 - Médéa</option><option value="27">27 - Mostaganem</option><option value="28">28 - M'Sila</option>
+                        <option value="29">29 - Mascara</option><option value="30">30 - Ouargla</option><option value="31">31 - Oran</option><option value="32">32 - El Bayadh</option>
+                        <option value="33">33 - Illizi</option><option value="34">34 - Bordj Bou Arreridj</option><option value="35">35 - Boumerdès</option><option value="36">36 - El Tarf</option>
+                        <option value="37">37 - Tindouf</option><option value="38">38 - Tissemsilt</option><option value="39">39 - El Oued</option><option value="40">40 - Khenchela</option>
+                        <option value="41">41 - Souk Ahras</option><option value="42">42 - Tipaza</option><option value="43">43 - Mila</option><option value="44">44 - Aïn Defla</option>
+                        <option value="45">45 - Naâma</option><option value="46">46 - Aïn Témouchent</option><option value="47">47 - Ghardaïa</option><option value="48">48 - Relizane</option>
+                        <option value="49">49 - Timimoun</option><option value="50">50 - Bordj Badji Mokhtar</option><option value="51">51 - Ouled Djellal</option><option value="52">52 - Béni Abbès</option>
+                        <option value="53">53 - In Salah</option><option value="54">54 - In Guezzam</option><option value="55">55 - Touggourt</option><option value="56">56 - Djanet</option>
+                        <option value="57">57 - El M'Ghair</option><option value="58">58 - El Meniaa</option>
                     </select>
                     
                     <select id="commune" disabled required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy text-gray-600 appearance-none select-chevron">
-                        <option value="" disabled selected>Sélectionnez d'abord une wilaya</option>
+                        <option value="" disabled selected>Commune • البلدية</option>
                     </select>
+                </div>
 
-                    <select id="delivery_type" onchange="toggleStopdesk()" required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy text-gray-600 appearance-none select-chevron"> 
-                        <option value="" disabled selected>Mode de livraison • طريقة التوصيل</option>
-                        <option value="express">À Domicile • إلى باب المنزل</option>
-                        <option value="stopdesk">Point Relais (Stopdesk) • مكتب التوصيل</option>
-                    </select>
+                <div class="flex items-center gap-2 mb-3 mt-6 text-xs md:text-sm font-bold text-gray-800 uppercase tracking-wider">
+                    <div class="w-6 h-px bg-gray-800"></div>
+                    LIVRAISON • التوصيل
+                </div>
+                
+                <!-- Options de livraison style Eva's Touch (Cases à cocher) -->
+                <div class="space-y-3">
+                    
+                    <!-- Option Point Relais (Stopdesk) -->
+                    <label class="delivery-option flex items-start gap-4 p-4 border border-gray-200 rounded-xl bg-gray-50" id="label-stopdesk">
+                        <input type="radio" name="delivery_type" value="stopdesk" onchange="selectDelivery('stopdesk')" class="mt-1">
+                        <div class="flex-1">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-gray-900 text-sm">Bureau Stopdesk • مكتب</span>
+                                <span class="font-bold text-gray-900 text-sm">--</span>
+                            </div>
+                            <!-- Sous-menu Stopdesk, caché tant que la case n'est pas cochée -->
+                            <div id="stopdesk-container" class="hidden mt-2">
+                                <select id="stopdesk" class="w-full p-2.5 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none text-gray-600 appearance-none select-chevron">
+                                    <option value="" disabled selected>Veuillez sélectionner une commune</option>
+                                </select>
+                            </div>
+                            <p id="stopdesk-hint" class="text-xs text-gray-500">Veuillez sélectionner une commune</p>
+                        </div>
+                    </label>
 
-                    <!-- Champ Stopdesk (caché par défaut) -->
-                    <select id="stopdesk" disabled class="hidden w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy text-gray-600 appearance-none select-chevron">
-                        <option value="" disabled selected>Sélectionnez un point relais</option>
-                    </select>
+                    <!-- Option À Domicile -->
+                    <label class="delivery-option flex items-start gap-4 p-4 border border-gray-200 rounded-xl bg-gray-50" id="label-domicile">
+                        <input type="radio" name="delivery_type" value="express" onchange="selectDelivery('express')" class="mt-1">
+                        <div class="flex-1">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-gray-900 text-sm">À domicile • للمنزل</span>
+                                <span class="font-bold text-gray-900 text-sm">--</span>
+                            </div>
+                            <p class="text-xs text-gray-500">Livraison jusqu'à votre porte</p>
+                        </div>
+                    </label>
+
                 </div>
                 
                 <div class="pt-4 mt-6">
@@ -215,12 +274,11 @@
 
     <!-- Scripts -->
     <script>
-        const API_BASE_URL = 'https://vexback.onrender.com/api'; // Lien vers ton serveur Render
+        const API_BASE_URL = 'https://vexback.onrender.com/api'; 
         let cart = [];
         let currentQty = 1;
-        let cachedOffices = []; // Stocke les bureaux Stopdesk de la wilaya sélectionnée
+        let cachedOffices = []; 
 
-        // --- Logique du Panier ---
         function updateDisplayQty(change) {
             currentQty += change;
             if (currentQty < 1) currentQty = 1;
@@ -318,31 +376,8 @@
             modal.classList.remove('flex');
         }
 
-        // --- Logique Dynamique des Wilayas, Communes & Stopdesk ---
+        // --- Logique Dynamique des Communes & Stopdesk ---
 
-        // 1. Charger les Wilayas au démarrage
-        document.addEventListener("DOMContentLoaded", () => {
-            fetch(`${API_BASE_URL}/wilayas`)
-                .then(res => res.json())
-                .then(data => {
-                    const select = document.getElementById('wilaya');
-                    select.innerHTML = '<option value="" disabled selected>Wilaya • الولاية</option>';
-                    // On s'adapte à la structure JSON retournée par Zimou (généralement data: [...])
-                    const wilayasArray = data.data || data; 
-                    wilayasArray.forEach(w => {
-                        const option = document.createElement('option');
-                        option.value = w.id || w.name; // Utilise l'ID si dispo, sinon le nom
-                        option.textContent = w.name || w.nom || `Wilaya ${w.id}`;
-                        select.appendChild(option);
-                    });
-                })
-                .catch(err => {
-                    console.error("Impossible de charger les wilayas:", err);
-                    document.getElementById('wilaya').innerHTML = '<option value="" disabled>Erreur de chargement</option>';
-                });
-        });
-
-        // 2. Charger les Communes et Stopdesks quand on choisit une Wilaya
         function loadCommunesAndOffices() {
             const wilayaId = document.getElementById('wilaya').value;
             const communeSelect = document.getElementById('commune');
@@ -350,7 +385,7 @@
             communeSelect.innerHTML = '<option value="" disabled selected>Chargement...</option>';
             communeSelect.disabled = true;
 
-            // Récupérer les communes
+            // Appel API pour les communes
             fetch(`${API_BASE_URL}/communes/${wilayaId}`)
                 .then(res => res.json())
                 .then(data => {
@@ -363,48 +398,63 @@
                         communeSelect.appendChild(option);
                     });
                     communeSelect.disabled = false;
+                })
+                .catch(err => {
+                    communeSelect.innerHTML = '<option value="" disabled selected>Erreur de connexion</option>';
                 });
 
-            // Récupérer les stopdesks de la wilaya en arrière-plan
+            // Appel API pour les Stopdesks
             fetch(`${API_BASE_URL}/offices/${wilayaId}`)
                 .then(res => res.json())
                 .then(data => {
                     cachedOffices = data.data || data;
                     populateStopdesks();
-                });
+                })
+                .catch(err => console.error("Erreur chargement stopdesk", err));
         }
 
-        // 3. Afficher le champ Stopdesk si Point Relais est sélectionné
-        function toggleStopdesk() {
-            const deliveryType = document.getElementById('delivery_type').value;
+        // --- Gestion visuelle des options de livraison ---
+        function selectDelivery(type) {
+            const labelStopdesk = document.getElementById('label-stopdesk');
+            const labelDomicile = document.getElementById('label-domicile');
+            const stopdeskContainer = document.getElementById('stopdesk-container');
+            const stopdeskHint = document.getElementById('stopdesk-hint');
             const stopdeskSelect = document.getElementById('stopdesk');
 
-            if (deliveryType === 'stopdesk') {
-                stopdeskSelect.classList.remove('hidden');
-                stopdeskSelect.disabled = false;
+            // Réinitialise les styles
+            labelStopdesk.classList.remove('selected');
+            labelDomicile.classList.remove('selected');
+
+            if (type === 'stopdesk') {
+                labelStopdesk.classList.add('selected');
+                stopdeskContainer.classList.remove('hidden');
+                stopdeskHint.classList.add('hidden');
                 stopdeskSelect.required = true;
-                populateStopdesks();
             } else {
-                stopdeskSelect.classList.add('hidden');
-                stopdeskSelect.disabled = true;
+                labelDomicile.classList.add('selected');
+                stopdeskContainer.classList.add('hidden');
+                stopdeskHint.classList.remove('hidden');
                 stopdeskSelect.required = false;
-                stopdeskSelect.value = "";
+                stopdeskSelect.value = ""; // Réinitialiser le choix
             }
         }
 
-        // 4. Remplir le menu des Stopdesks
         function populateStopdesks() {
             const stopdeskSelect = document.getElementById('stopdesk');
-            stopdeskSelect.innerHTML = '<option value="" disabled selected>Sélectionnez un point relais</option>';
+            const stopdeskHint = document.getElementById('stopdesk-hint');
+            stopdeskSelect.innerHTML = '<option value="" disabled selected>Choisissez un point relais</option>';
             
             if (cachedOffices.length === 0) {
                 stopdeskSelect.innerHTML = '<option value="" disabled selected>Aucun point relais disponible</option>';
+                stopdeskHint.textContent = "Aucun point relais dans cette wilaya";
                 return;
             }
 
+            stopdeskHint.textContent = `${cachedOffices.length} point(s) relais disponible(s)`;
+            
             cachedOffices.forEach(office => {
                 const option = document.createElement('option');
-                option.value = office.id; // Zimou a besoin de l'ID du stopdesk
+                option.value = office.id; 
                 option.textContent = office.name || office.address || `Bureau ${office.id}`;
                 stopdeskSelect.appendChild(option);
             });
@@ -418,13 +468,20 @@
                 return;
             }
 
+            // Vérifier si un mode de livraison a été choisi
+            const selectedDelivery = document.querySelector('input[name="delivery_type"]:checked');
+            if(!selectedDelivery) {
+                alert("Veuillez sélectionner un mode de livraison (À Domicile ou Point Relais).");
+                return;
+            }
+
             const orderData = {
                 nom: document.getElementById('nom').value,
                 prenom: document.getElementById('prenom').value,
                 telephone: document.getElementById('telephone').value,
                 wilaya: document.getElementById('wilaya').value,
                 commune: document.getElementById('commune').value,
-                delivery_type: document.getElementById('delivery_type').value,
+                delivery_type: selectedDelivery.value,
                 stopdesk: document.getElementById('stopdesk').value,
                 cart: cart,
                 total: cart.reduce((sum, item) => sum + (item.price * item.qty), 0)
@@ -448,7 +505,11 @@
                     updateCartUI();
                     closeModal();
                     e.target.reset();
-                    toggleStopdesk(); // Cache le stopdesk à la réinitialisation
+                    // Réinitialiser visuellement les options de livraison
+                    document.getElementById('label-stopdesk').classList.remove('selected');
+                    document.getElementById('label-domicile').classList.remove('selected');
+                    document.getElementById('stopdesk-container').classList.add('hidden');
+                    document.getElementById('stopdesk-hint').classList.remove('hidden');
                 } else {
                     alert("❌ Erreur: " + data.message);
                 }
@@ -464,4 +525,4 @@
         } 
     </script>
 </body>
-</html> 
+</html>
