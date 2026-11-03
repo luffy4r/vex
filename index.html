@@ -194,7 +194,7 @@
                 </div>
                 
                 <div class="space-y-3">
-                    <!-- Liste des 58 wilayas intégrée directement pour plus de fiabilité -->
+                    <!-- Liste des 58 wilayas intégrée pour éviter l'erreur de chargement si le backend est lent -->
                     <select id="wilaya" onchange="loadCommunesAndOffices()" required class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-eva-burgundy text-gray-600 appearance-none select-chevron"> 
                         <option value="" disabled selected>Wilaya • الولاية</option>
                         <option value="1">1 - Adrar</option><option value="2">2 - Chlef</option><option value="3">3 - Laghouat</option><option value="4">4 - Oum El Bouaghi</option>
@@ -376,18 +376,21 @@
             modal.classList.remove('flex');
         }
 
-        // --- Logique Dynamique des Communes & Stopdesk ---
-
+        // --- Logique Dynamique des Communes & Stopdesk avec erreurs ---
         function loadCommunesAndOffices() {
             const wilayaId = document.getElementById('wilaya').value;
             const communeSelect = document.getElementById('commune');
             
-            communeSelect.innerHTML = '<option value="" disabled selected>Chargement...</option>';
+            communeSelect.innerHTML = '<option value="" disabled selected>Connexion au serveur... (patientez)</option>';
             communeSelect.disabled = true;
 
             // Appel API pour les communes
             fetch(`${API_BASE_URL}/communes/${wilayaId}`)
-                .then(res => res.json())
+                .then(res => {
+                    if (res.status === 500) throw new Error("api_error");
+                    if (!res.ok) throw new Error("server_sleep");
+                    return res.json();
+                })
                 .then(data => {
                     communeSelect.innerHTML = '<option value="" disabled selected>Commune • البلدية</option>';
                     const communesArray = data.data || data;
@@ -400,7 +403,13 @@
                     communeSelect.disabled = false;
                 })
                 .catch(err => {
-                    communeSelect.innerHTML = '<option value="" disabled selected>Erreur de connexion</option>';
+                    console.error(err);
+                    if (err.message === "api_error") {
+                        communeSelect.innerHTML = '<option value="" disabled selected>Erreur Clé API Zimou (Voir Render)</option>';
+                    } else {
+                        communeSelect.innerHTML = '<option value="" disabled selected>Serveur en réveil (réessayez)</option>';
+                    }
+                    communeSelect.disabled = false;
                 });
 
             // Appel API pour les Stopdesks
@@ -413,7 +422,6 @@
                 .catch(err => console.error("Erreur chargement stopdesk", err));
         }
 
-        // --- Gestion visuelle des options de livraison ---
         function selectDelivery(type) {
             const labelStopdesk = document.getElementById('label-stopdesk');
             const labelDomicile = document.getElementById('label-domicile');
@@ -421,7 +429,6 @@
             const stopdeskHint = document.getElementById('stopdesk-hint');
             const stopdeskSelect = document.getElementById('stopdesk');
 
-            // Réinitialise les styles
             labelStopdesk.classList.remove('selected');
             labelDomicile.classList.remove('selected');
 
@@ -435,7 +442,7 @@
                 stopdeskContainer.classList.add('hidden');
                 stopdeskHint.classList.remove('hidden');
                 stopdeskSelect.required = false;
-                stopdeskSelect.value = ""; // Réinitialiser le choix
+                stopdeskSelect.value = ""; 
             }
         }
 
@@ -460,7 +467,6 @@
             });
         }
 
-        // --- Soumission de la commande ---
         function submitOrder(e) {
             e.preventDefault();
             if(cart.length === 0) {
@@ -468,7 +474,6 @@
                 return;
             }
 
-            // Vérifier si un mode de livraison a été choisi
             const selectedDelivery = document.querySelector('input[name="delivery_type"]:checked');
             if(!selectedDelivery) {
                 alert("Veuillez sélectionner un mode de livraison (À Domicile ou Point Relais).");
@@ -505,7 +510,6 @@
                     updateCartUI();
                     closeModal();
                     e.target.reset();
-                    // Réinitialiser visuellement les options de livraison
                     document.getElementById('label-stopdesk').classList.remove('selected');
                     document.getElementById('label-domicile').classList.remove('selected');
                     document.getElementById('stopdesk-container').classList.add('hidden');
@@ -522,7 +526,7 @@
                 btn.textContent = originalText;
                 btn.disabled = false;
             });
-        } 
+        }
     </script>
 </body>
 </html>
