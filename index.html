@@ -462,10 +462,23 @@
             cachedOffices.forEach(office => {
                 const option = document.createElement('option');
                 option.value = office.id; 
-                option.textContent = office.name || office.address || `Bureau ${office.id}`;
+                
+                // Nouvelle logique : On combine le nom et l'adresse pour être précis
+                let displayName = "";
+                
+                // Si l'API donne une adresse et un nom
+                if (office.address && office.name && office.address !== office.name) {
+                    displayName = `${office.name} - ${office.address}`;
+                } 
+                // Sinon on prend ce qui est disponible
+                else {
+                    displayName = office.address || office.name || `Bureau n°${office.id}`;
+                }
+                
+                option.textContent = displayName;
                 stopdeskSelect.appendChild(option);
             });
-        }
+        } 
 
         function submitOrder(e) {
             e.preventDefault();
