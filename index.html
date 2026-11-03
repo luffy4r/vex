@@ -258,7 +258,6 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script>
         const API_BASE_URL = 'https://vexback.onrender.com/api'; 
         let cart = [];
@@ -455,15 +454,14 @@
             const stopdeskHint = document.getElementById('stopdesk-hint');
             const hiddenInput = document.getElementById('stopdesk_val');
             
-            // DOUBLE SÉCURITÉ : on récupère l'ID exact de la commune sélectionnée
             const selectedCommuneId = document.getElementById('commune').value;
             
             hiddenInput.value = ""; 
             container.innerHTML = '';
             
-            // On filtre pour ne garder STRICTEMENT que les bureaux de la commune sélectionnée
             const stopdeskOptions = cachedPricing.filter(opt => {
-                return String(opt.commune_id) === String(selectedCommuneId);
+                let cId = opt.commune_id || (opt.office && opt.office.commune_id);
+                return String(cId) === String(selectedCommuneId);
             });
 
             if (!stopdeskOptions || stopdeskOptions.length === 0) {
@@ -475,19 +473,27 @@
             stopdeskHint.textContent = `${stopdeskOptions.length} point(s) relais disponible(s)`;
             
             stopdeskOptions.forEach(opt => {
-                let cleanName = opt.name || opt.partner_name || opt.carrier_name || "Bureau Stopdesk";
+                // 1. Extraction absolue du VRAI identifiant du bureau
+                let officeId = opt.office_id || (opt.office && opt.office.id) || opt.id;
+                
+                // 2. Extraction en profondeur du nom du partenaire 
+                let partnerName = (opt.partner && opt.partner.name) || 
+                                  (opt.carrier && opt.carrier.name) || 
+                                  (opt.office && opt.office.partner && opt.office.partner.name) || 
+                                  (opt.office && opt.office.carrier && opt.office.carrier.name) || 
+                                  opt.partner_name || 
+                                  opt.carrier_name;
+                
+                let officeName = (opt.office && opt.office.name) || opt.name;
+                
+                let cleanName = partnerName || officeName || "Bureau Stopdesk";
+                
+                // 3. L'adresse
+                let cleanAddress = (opt.office && opt.office.address) || opt.address || "";
+                
                 let price = opt.price || opt.delivery_fee || opt.delivery_price || opt.cost || 0;
-                let cleanAddress = opt.address || "";
-                let officeId = opt.id || Math.random();
 
-                if (cleanName.includes('(')) {
-                    let parts = cleanName.split('(');
-                    cleanName = parts[0].trim();
-                    if (!cleanAddress) {
-                        cleanAddress = parts[1].replace(')', '').trim();
-                    }
-                }
-
+                // Nettoyage esthétique (on supprime les suffixes de wilayas comme "Alger", "Chlef", etc.)
                 cleanName = cleanName.replace(/\s+(alger|oran|constantine|batna|blida|sétif|annaba|tlemcen|tizi ouzou|bejaia|chlef|djelfa|skikda|sidi bel abbes|biskra|tebessa|el oued|mostaganem|msila|medea|ouargla|relizane|boumerdes|tipaza|mila|ain defla|ghardaia|saida|laghouat|um el bouaghi|bechar|jijel|bordj bou arreridj|el tarf|tindouf|tissemsilt|khenchela|souk ahras|naama|ain temouchent)$/i, '').trim();
 
                 let displayName = `${cleanName} - ${price} DA`;
@@ -499,13 +505,23 @@
                     <input type="radio" name="selected_stopdesk" value='${JSON.stringify({id: officeId, address: cleanAddress, name: cleanName, price: price})}' class="peer sr-only" onchange="document.getElementById('stopdesk_val').value = this.value">
                     <div class="flex items-start gap-3 p-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition w-full peer-checked:border-eva-burgundy peer-checked:bg-gray-50 peer-checked:shadow-sm">
                         <div class="w-8 h-8 rounded bg-gray-100 flex items-center justify-center text-gray-700 border border-gray-200 flex-shrink-0 shadow-sm font-bold text-xs">📦</div>
-                        <div class="flex-1 mt-0.5">
+                        <div class="flex-1 mt-0.5 pointer-events-none">
                            <div class="font-bold text-gray-900 text-[13px] leading-snug pr-2">${displayName}</div>
                            ${cleanAddress ? `<div class="text-[11px] text-gray-500 mt-1 leading-relaxed">(${cleanAddress})</div>` : ''}
                         </div>
                         <div class="mt-1 flex-shrink-0 w-4 h-4 rounded-full border border-gray-300 flex items-center justify-center peer-checked:border-[5px] peer-checked:border-eva-burgundy transition-all"></div>
                     </div>
                 `;
+                
+                // Petit hack pour que toute la case soit cliquable sur mobile comme sur PC
+                label.addEventListener('click', function(e) {
+                    const input = this.querySelector('input');
+                    if (e.target !== input) {
+                        input.checked = true;
+                        input.dispatchEvent(new Event('change'));
+                    }
+                });
+                
                 container.appendChild(label);
             });
         }
