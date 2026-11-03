@@ -473,28 +473,37 @@
             stopdeskHint.textContent = `${stopdeskOptions.length} point(s) relais disponible(s)`;
             
             stopdeskOptions.forEach(opt => {
-                // 1. Extraction absolue du VRAI identifiant du bureau
                 let officeId = opt.office_id || (opt.office && opt.office.id) || opt.id;
                 
-                // 2. Extraction en profondeur du nom du partenaire 
-                let partnerName = (opt.partner && opt.partner.name) || 
-                                  (opt.carrier && opt.carrier.name) || 
-                                  (opt.office && opt.office.partner && opt.office.partner.name) || 
-                                  (opt.office && opt.office.carrier && opt.office.carrier.name) || 
-                                  opt.partner_name || 
-                                  opt.carrier_name;
-                
-                let officeName = (opt.office && opt.office.name) || opt.name;
-                
-                let cleanName = partnerName || officeName || "Bureau Stopdesk";
-                
-                // 3. L'adresse
+                // --- EXTRACTION FORCÉE DU VRAI NOM DU TRANSPORTEUR ---
+                // La nouvelle route Zimou met parfois le nom dans partner_name, carrier_name, ou caché dans le nom du bureau
+                let rawName = opt.partner_name || 
+                              opt.carrier_name || 
+                              (opt.office && opt.office.partner && opt.office.partner.name) || 
+                              (opt.partner && opt.partner.name) || 
+                              (opt.office && opt.office.name) || 
+                              opt.name || 
+                              "Bureau Stopdesk";
+                              
                 let cleanAddress = (opt.office && opt.office.address) || opt.address || "";
-                
                 let price = opt.price || opt.delivery_fee || opt.delivery_price || opt.cost || 0;
 
-                // Nettoyage esthétique (on supprime les suffixes de wilayas comme "Alger", "Chlef", etc.)
-                cleanName = cleanName.replace(/\s+(alger|oran|constantine|batna|blida|sétif|annaba|tlemcen|tizi ouzou|bejaia|chlef|djelfa|skikda|sidi bel abbes|biskra|tebessa|el oued|mostaganem|msila|medea|ouargla|relizane|boumerdes|tipaza|mila|ain defla|ghardaia|saida|laghouat|um el bouaghi|bechar|jijel|bordj bou arreridj|el tarf|tindouf|tissemsilt|khenchela|souk ahras|naama|ain temouchent)$/i, '').trim();
+                // Si le nom contient l'adresse entre parenthèses, on sépare
+                if (rawName.includes('(')) {
+                    let parts = rawName.split('(');
+                    rawName = parts[0].trim();
+                    if (!cleanAddress) {
+                        cleanAddress = parts[1].replace(')', '').trim();
+                    }
+                }
+                
+                // Si l'adresse est aussi dans opt.office.address, on l'utilise en priorité
+                if (opt.office && opt.office.address) {
+                    cleanAddress = opt.office.address;
+                }
+
+                // --- NETTOYAGE DU NOM (Enlever "Alger", "Chlef", etc.) ---
+                let cleanName = rawName.replace(/\s+(alger|oran|constantine|batna|blida|sétif|annaba|tlemcen|tizi ouzou|bejaia|chlef|djelfa|skikda|sidi bel abbes|biskra|tebessa|el oued|mostaganem|msila|medea|ouargla|relizane|boumerdes|tipaza|mila|ain defla|ghardaia|saida|laghouat|um el bouaghi|bechar|jijel|bordj bou arreridj|el tarf|tindouf|tissemsilt|khenchela|souk ahras|naama|ain temouchent)$/i, '').trim();
 
                 let displayName = `${cleanName} - ${price} DA`;
 
@@ -513,7 +522,6 @@
                     </div>
                 `;
                 
-                // Petit hack pour que toute la case soit cliquable sur mobile comme sur PC
                 label.addEventListener('click', function(e) {
                     const input = this.querySelector('input');
                     if (e.target !== input) {
