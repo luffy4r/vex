@@ -235,6 +235,21 @@ const P={name:'Petit livret de Sudoku',price:1000,img:'https://ik.imagekit.io/ve
 const LINKS={instagram:"",tiktok:"",developpeur:""};
 const WILAYAS=["Adrar","Chlef","Laghouat","Oum El Bouaghi","Batna","Béjaïa","Biskra","Béchar","Blida","Bouira","Tamanrasset","Tébessa","Tlemcen","Tiaret","Tizi Ouzou","Alger","Djelfa","Jijel","Sétif","Saïda","Skikda","Sidi Bel Abbès","Annaba","Guelma","Constantine","Médéa","Mostaganem","M'Sila","Mascara","Ouargla","Oran","El Bayadh","Illizi","Bordj Bou Arreridj","Boumerdès","El Tarf","Tindouf","Tissemsilt","El Oued","Khenchela","Souk Ahras","Tipaza","Mila","Aïn Defla","Naâma","Aïn Témouchent","Ghardaïa","Relizane","Timimoun","Bordj Badji Mokhtar","Ouled Djellal","Béni Abbès","In Salah","In Guezzam","Touggourt","Djanet","El M'Ghair","El Meniaa"];
 const CARRIERS=[["yalidine","Yalidine Express"],["zr express","ZR Express"],["maystro","Maystro Delivery"],["zimou express","Zimou Express"],["partenaire point relais","Partenaire Point Relais"],["noest","Noest Express"],["nord ouest","Noest Express"],["anderson","Anderson Express"],["world express","World Express"],["dhd","DHD Express"],["kazi","Kazi Tour"],["ecotrack","Ecotrack"],["gazelle","Gazelle Express"]];
+/* LOGOS DES BUREAUX : colle l'URL de chaque logo entre les guillemets (vide = icône 📦) */
+const LOGOS={
+  "Yalidine Express":"https://ik.imagekit.io/vexaccess/kgpDluZg45cjgvWacRcAnV6mEHwgRFG5dmAEB6AB.svg",
+  "ZR Express":"https://ik.imagekit.io/vexaccess/0Q2ELStA5D4OdfncOY3zVvPSUijoLVknT1eEzyTv.svg",
+  "Maystro Delivery":"https://ik.imagekit.io/vexaccess/vOigAOwX95np3YfAl2KHFZTxV4sgsApjFxyHdo1u.svg?updatedAt=1793752741116",
+  "Zimou Express":"https://ik.imagekit.io/vexaccess/kgpDluZg45cjgvWacRcAnV6mEHwgRFG5dmAEB6AB.svg",
+  "Partenaire Point Relais":"https://ik.imagekit.io/vexaccess/SWnI0NhKpJSikoaQjf8XgkY2MvTvzeOtYQCMZifn.svg?updatedAt=1793752697235",
+  "Noest Express":"https://ik.imagekit.io/vexaccess/8zd2kfjvZbrvtUYQFUBpwKPmPK2m0yQvM3ITjYFd.svg",
+  "Anderson Express":"https://ik.imagekit.io/vexaccess/401VLgCQ3l7Kw97GnYZTwJlymnm1awY36cOghllI.svg?updatedAt=1793752600971",
+  "World Express":"https://ik.imagekit.io/vexaccess/zzgAcMgTGqN8e6A1g0FVV4rSgTu45rNrS3IzIqCH.svg",
+  "DHD Express":"https://ik.imagekit.io/vexaccess/3Wztz7vZNPTnXGSZpC4ew6KaHwX82Tmi2OEcahTz.svg?updatedAt=1793752656620",
+  "Kazi Tour":"",
+  "Ecotrack":"",
+  "Gazelle Express":""
+};
 const PHONE_RE=/^(05|06|07)[0-9]{8}$/;
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -422,8 +437,9 @@ function populateStopdesks(){
     let addr=(o.office&&o.office.address)||o.address||'';const rn=o.name||(o.office&&o.office.name)||'';
     if(!addr&&rn.includes('('))addr=rn.split('(')[1].replace(')','').trim();
     const w=document.createElement('div');w.className='rise';w.style.setProperty('--i',Math.min(i,8));
-    w.innerHTML='<label class="block cursor-pointer select-none"><input type="radio" name="selected_stopdesk" class="peer sr-only"><div class="flex items-start gap-3 p-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition peer-checked:border-eva-burgundy peer-checked:bg-gray-50 peer-checked:shadow-sm"><div class="w-8 h-8 rounded bg-gray-100 flex items-center justify-center border border-gray-200 flex-shrink-0 text-xs">📦</div><div class="flex-1 mt-0.5"><div class="font-bold text-gray-900 text-[13px] leading-snug">'+esc(name)+' - '+esc(price)+' DA</div>'+(addr?'<div class="text-[11px] text-gray-500 mt-1">('+esc(addr)+')</div>':'')+'</div></div></label>';
+    w.innerHTML='<label class="block cursor-pointer select-none"><input type="radio" name="selected_stopdesk" class="peer sr-only"><div class="flex items-start gap-3 p-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition peer-checked:border-eva-burgundy peer-checked:bg-gray-50 peer-checked:shadow-sm"><div class="ico w-10 h-10 rounded-lg bg-white flex items-center justify-center border border-gray-200 flex-shrink-0 overflow-hidden text-base">'+(LOGOS[name]?'<img src="'+esc(LOGOS[name])+'" alt="" loading="lazy" class="w-full h-full object-contain p-1">':'📦')+'</div><div class="flex-1 mt-0.5"><div class="font-bold text-gray-900 text-[13px] leading-snug">'+esc(name)+' - '+esc(price)+' DA</div>'+(addr?'<div class="text-[11px] text-gray-500 mt-1">('+esc(addr)+')</div>':'')+'</div></div></label>';
     w.querySelector('input').onchange=()=>{$('#stopdesk_val').value=JSON.stringify({id,address:addr,name,price})};
+    const im=w.querySelector('.ico img');if(im)im.onerror=()=>im.replaceWith('📦');
     box.appendChild(w);
   });
 }
@@ -488,4 +504,4 @@ $$('.stagger-item').forEach(i=>io.observe(i));
 updateCartUI();
 </script>
 </body>
-</html> 
+</html>
