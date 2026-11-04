@@ -463,7 +463,8 @@ function submitOrder(e){
   const t=$('input[name="delivery_type"]:checked').value;
   const orderData={
     nom:$('#nom').value.trim(),prenom:$('#prenom').value.trim(),telephone:phone(),
-    wilaya:$('#wilaya').value,commune:$('#commune').value,delivery_type:t,
+    wilaya:$('#wilaya').value,commune:$('#commune').value,
+    wilayaName:$('#wilaya').selectedOptions[0].text,communeName:$('#commune').selectedOptions[0].text,delivery_type:t,
     stopdesk:t==='stopdesk'?JSON.parse($('#stopdesk_val').value):null,
     address_domicile:$('#adresse_domicile').value.trim(),cart,
     total:cart.reduce((s,i)=>s+P.price*i.qty,0)
