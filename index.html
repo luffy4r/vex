@@ -118,9 +118,11 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 #sbar.show{transform:none}
 @media(max-width:767px){.fx-footer{padding-bottom:calc(90px + env(safe-area-inset-bottom,0px))}}
 /* bouton qui se transforme */
-.addbtn{position:relative;overflow:hidden;height:56px;transition:all .4s cubic-bezier(.68,-.3,.27,1.4)}
+.addbtn{position:relative;overflow:hidden;height:56px;flex:1 1 0%;min-width:0;padding:0 10px;transition:all .4s cubic-bezier(.68,-.3,.27,1.4)}
+.bt-t{display:flex;align-items:center;justify-content:center;gap:8px;line-height:1.15;text-align:center;transition:opacity .2s}
+.addbtn.ok .bt-t{opacity:0}
 .addbtn .bt-c{position:absolute;inset:0;margin:auto;width:26px;height:26px;opacity:0;transform:scale(.3);transition:all .3s .15s}
-.addbtn.ok{align-self:center;width:56px;padding:0;border-radius:9999px;background:#22c55e;border-color:#22c55e;color:#fff!important;font-size:0}
+.addbtn.ok{flex:0 0 56px;width:56px;padding:0;border-radius:9999px;background:#22c55e;border-color:#22c55e;color:#fff!important;font-size:0}
 .addbtn.ok .bt-c{opacity:1;transform:none}
 /* choix d'un bureau */
 .ck8{flex:none;margin-left:auto;width:22px;height:22px;border-radius:9999px;border:2px solid #d1d5db;display:flex;align-items:center;justify-content:center;transition:all .25s}
@@ -159,36 +161,33 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
   </div>
 </header>
 
-<main class="flex-grow py-0 md:py-10 px-0 md:px-4">
-  <div class="max-w-4xl mx-auto bg-white md:rounded-2xl md:shadow-sm md:border border-gray-100 overflow-hidden flex flex-col md:flex-row">
-    <div class="fx-up md:w-1/2 bg-gray-50 flex items-center justify-center p-0 md:p-6" style="--d:.15s">
-      <div class="relative w-full overflow-hidden md:rounded-xl md:shadow-md">
+<main class="flex-grow max-w-2xl mx-auto w-full px-4 py-8 flex flex-col gap-6">
+  <div>
+    <h1 id="title" class="text-3xl md:text-4xl font-bold text-eva-burgundy mb-2">Sudoku Pocket Book</h1>
+    <p class="fx-up text-lg text-gray-500 mb-4" dir="rtl" style="--d:.45s">كتيب السودوكو بحجم صغير 🧩</p>
+    <p id="price" class="fx-up text-3xl font-bold mb-4" style="--d:.6s">1200 DA</p>
+    <p class="fx-up text-gray-600 leading-relaxed" style="--d:.75s">Train your brain every day with our Sudoku Pocket Book. Ideal for boosting focus and memory.<span dir="rtl" class="block mt-2 text-gray-500">درّب عقلك يوميًا مع كتيب السودوكو بحجم صغير. مثالي لتعزيز التركيز والذاكرة.</span></p>
+  </div>
+  <div class="fx-up w-full rounded-3xl overflow-hidden bg-white shadow-md border border-gray-100" style="--d:.9s">
+    <div class="relative w-full overflow-hidden">
         <div id="gal" class="flex overflow-x-auto snap-x snap-mandatory w-full"></div>
         <button type="button" id="gal-prev" class="gal-ar" style="left:10px" aria-label="Previous photo"><svg width="18" height="18" fill="none" stroke="#392E2C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
         <button type="button" id="gal-next" class="gal-ar" style="right:10px" aria-label="Next photo"><svg width="18" height="18" fill="none" stroke="#392E2C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
         <div id="gal-dots" class="absolute bottom-3 inset-x-0 flex justify-center gap-1.5"></div>
       </div>
-    </div>
-    <div class="md:w-1/2 p-6 md:p-8 flex flex-col justify-center">
-      <h1 id="title" class="text-3xl md:text-4xl font-bold text-eva-burgundy mb-2">Sudoku Pocket Book</h1>
-      <p class="fx-up text-lg text-gray-500 mb-4" dir="rtl" style="--d:.45s">كتيب السودوكو بحجم صغير 🧩</p>
-      <p id="price" class="fx-up text-2xl font-semibold text-gray-900 mb-6" style="--d:.6s">1200 DA</p>
-      <p class="fx-up text-gray-600 mb-8 leading-relaxed" style="--d:.75s">Train your brain every day with our Sudoku Pocket Book. Ideal for boosting focus and memory.<span dir="rtl" class="block mt-2 text-gray-500">درّب عقلك يوميًا مع كتيب السودوكو بحجم صغير. مثالي لتعزيز التركيز والذاكرة.</span></p>
-      <div class="fx-up mb-6" style="--d:.9s">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Quantity • الكمية</label>
-        <div class="inline-flex items-center border-2 border-gray-200 rounded-lg overflow-hidden">
-          <button onclick="updateDisplayQty(-1)" class="px-5 py-3 bg-gray-50 text-gray-600 hover:bg-gray-100 font-bold text-lg btn-tactile">-</button>
-          <span id="display-qty" class="inline-block px-6 py-3 font-semibold text-lg min-w-[3rem] text-center border-x-2 border-gray-200">1</span>
-          <button onclick="updateDisplayQty(1)" class="px-5 py-3 bg-gray-50 text-gray-600 hover:bg-gray-100 font-bold text-lg btn-tactile">+</button>
-        </div>
-      </div>
-      <div id="cta" class="fx-up flex flex-col gap-3" style="--d:1s">
-        <button onclick="addToCart(this)" class="addbtn w-full bg-eva-pinkLight text-eva-burgundy border border-gray-200 font-bold rounded-xl hover:bg-gray-200 btn-tactile text-lg">Add to cart • أضف إلى السلة<svg class="bt-c" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></button>
-        <button onclick="buyNow()" class="w-full bg-eva-burgundy text-white font-bold py-3.5 rounded-xl hover:bg-eva-burgundy-dark transition shadow-md btn-tactile text-lg">Confirm your order • أكّد طلبك</button>
-      </div>
-    </div>
   </div>
-  <div class="max-w-4xl mx-auto mt-8 px-2 md:px-0 grid grid-cols-3 gap-2 text-center pb-6">
+  <div id="cta" class="fx-up flex flex-col gap-4" style="--d:1s">
+    <div class="flex items-center justify-center gap-3 w-full">
+      <div class="flex items-center border border-gray-300 rounded-2xl bg-white px-3 h-[56px]">
+        <button type="button" onclick="updateDisplayQty(-1)" aria-label="Decrease quantity" class="text-gray-500 hover:text-black text-xl font-medium px-2 btn-tactile">&minus;</button>
+        <span id="display-qty" class="inline-block text-gray-900 font-medium text-lg px-3 min-w-[2.5rem] text-center">1</span>
+        <button type="button" onclick="updateDisplayQty(1)" aria-label="Increase quantity" class="text-gray-500 hover:text-black text-xl font-medium px-2 btn-tactile">+</button>
+      </div>
+      <button onclick="addToCart(this)" class="addbtn bg-black hover:bg-gray-800 text-white rounded-2xl font-bold text-[14px] md:text-lg btn-tactile"><span class="bt-t"><svg class="w-5 h-5 shrink-0 fill-current" viewBox="0 0 24 24"><path d="M17 18c-1.11 0-2 .89-2 2s.89 2 2 2 2-.89 2-2-.89-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm6 16c-1.11 0-2 .89-2 2s.89 2 2 2 2-.89 2-2-.89-2-2-2z"/></svg><span>Add to cart • أضف إلى السلة</span></span><svg class="bt-c" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></button>
+    </div>
+    <button onclick="buyNow()" class="w-full py-4 bg-eva-burgundy hover:bg-eva-burgundy-dark text-white rounded-2xl font-bold transition-all text-lg shadow-lg btn-tactile">Confirm your order • أكّد طلبك</button>
+  </div>
+  <div class="grid grid-cols-3 gap-2 text-center pb-4">
     <div class="stagger-item flex flex-col items-center" style="transition-delay:.1s"><div class="w-14 h-14 bg-eva-pinkLight rounded-full flex items-center justify-center text-2xl mb-3">🚚</div><h3 class="font-semibold text-xs md:text-sm leading-tight">Fast delivery across Algeria<span dir="rtl" class="block text-gray-500 mt-0.5">توصيل سريع في كل الجزائر</span></h3></div>
     <div class="stagger-item flex flex-col items-center" style="transition-delay:.25s"><div class="w-14 h-14 bg-eva-pinkLight rounded-full flex items-center justify-center text-2xl mb-3">💵</div><h3 class="font-semibold text-xs md:text-sm leading-tight">Cash on delivery<span dir="rtl" class="block text-gray-500 mt-0.5">الدفع عند الاستلام</span></h3></div>
     <div class="stagger-item flex flex-col items-center" style="transition-delay:.4s"><div class="w-14 h-14 bg-eva-pinkLight rounded-full flex items-center justify-center text-2xl mb-3">🧠</div><h3 class="font-semibold text-xs md:text-sm leading-tight">100% Beneficial<span dir="rtl" class="block text-gray-500 mt-0.5">مفيد بنسبة 100%</span></h3></div>
@@ -297,7 +296,7 @@ const P={name:'Sudoku Pocket Book',price:1200,img:'https://ik.imagekit.io/vexacc
 /* TES LIENS : remplis seulement ce qui est entre guillemets (un lien vide est masqué) */
 const LINKS={instagram:"https://www.instagram.com/vex.accessoires",tiktok:"https://www.tiktok.com/@vex.essentials",developpeur:"https://www.instagram.com/luffydz.dev",track:""};
 /* PHOTOS DU PRODUIT : ajoute les liens ici, entre guillemets, separes par des virgules (la premiere = photo principale) */
-const PHOTOS=["https://ik.imagekit.io/vexaccess/IMG_7320.jpg","https://ik.imagekit.io/vexaccess/IMG_7322.jpg"];
+const PHOTOS=["https://ik.imagekit.io/vexaccess/IMG_7243.jpg"];
 P.img=PHOTOS[0];
 const WILAYAS=["Adrar","Chlef","Laghouat","Oum El Bouaghi","Batna","Béjaïa","Biskra","Béchar","Blida","Bouira","Tamanrasset","Tébessa","Tlemcen","Tiaret","Tizi Ouzou","Alger","Djelfa","Jijel","Sétif","Saïda","Skikda","Sidi Bel Abbès","Annaba","Guelma","Constantine","Médéa","Mostaganem","M'Sila","Mascara","Ouargla","Oran","El Bayadh","Illizi","Bordj Bou Arreridj","Boumerdès","El Tarf","Tindouf","Tissemsilt","El Oued","Khenchela","Souk Ahras","Tipaza","Mila","Aïn Defla","Naâma","Aïn Témouchent","Ghardaïa","Relizane","Timimoun","Bordj Badji Mokhtar","Ouled Djellal","Béni Abbès","In Salah","In Guezzam","Touggourt","Djanet","El M'Ghair","El Meniaa"];
 const CARRIERS=[["yalidine","Yalidine Express"],["zr express","ZR Express"],["maystro","Maystro Delivery"],["zimou express","Zimou Express"],["partenaire point relais","Partenaire Point Relais"],["noest","Noest Express"],["nord ouest","Noest Express"],["anderson","Anderson Express"],["world express","World Express"],["dhd","DHD Express"],["kazi","Kazi Tour"],["ecotrack","Ecotrack"],["gazelle","Gazelle Express"]];
@@ -691,4 +690,4 @@ loadPrefill();
 updateCartUI();
 </script>
 </body>
-</html> 
+</html>
