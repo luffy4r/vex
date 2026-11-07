@@ -129,6 +129,19 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 .peer:checked ~ div .ck8{background:#171717;border-color:#171717;animation:pop .4s}
 .peer:checked ~ div .ck8 svg{animation:draw .35s .1s forwards}
 .petals span.dg{font:700 var(--s) Poppins,sans-serif;opacity:.12}
+
+/* galerie */
+#gal{scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#gal::-webkit-scrollbar{display:none}
+.gimg{flex:none;width:100%;scroll-snap-align:center;aspect-ratio:4/5;object-fit:cover}
+.gd{display:block;width:7px;height:7px;border-radius:9999px;background:rgba(255,255,255,.65);box-shadow:0 0 4px rgba(0,0,0,.35);transition:all .3s}
+.gd.on{width:20px;background:#fff}
+.gal-ar{display:none;position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:9999px;background:rgba(255,255,255,.9);align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+@media(min-width:768px){.gal-ar.on{display:flex}}
+/* telecharger le recu */
+.rc-dl{display:block;width:100%;margin-top:14px;padding:12px;border:2px solid #392E2C;border-radius:14px;background:#fff;font-weight:700;font-size:14px}
+.rc-dl:active{background:#f3f4f6}
+#success #rc-dl{animation:up .6s cubic-bezier(.16,1,.3,1) 1.5s both}
 </style>
 </head>
 <body class="text-gray-800 antialiased min-h-screen flex flex-col font-sans">
@@ -149,7 +162,12 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 <main class="flex-grow py-0 md:py-10 px-0 md:px-4">
   <div class="max-w-4xl mx-auto bg-white md:rounded-2xl md:shadow-sm md:border border-gray-100 overflow-hidden flex flex-col md:flex-row">
     <div class="fx-up md:w-1/2 bg-gray-50 flex items-center justify-center p-0 md:p-6" style="--d:.15s">
-      <img id="main-img" src="https://ik.imagekit.io/vexaccess/IMG_7243.jpg" alt="Sudoku Pocket Book" fetchpriority="high" class="w-full h-auto object-cover aspect-[4/5] md:rounded-xl md:shadow-md">
+      <div class="relative w-full overflow-hidden md:rounded-xl md:shadow-md">
+        <div id="gal" class="flex overflow-x-auto snap-x snap-mandatory w-full"></div>
+        <button type="button" id="gal-prev" class="gal-ar" style="left:10px" aria-label="Previous photo"><svg width="18" height="18" fill="none" stroke="#392E2C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <button type="button" id="gal-next" class="gal-ar" style="right:10px" aria-label="Next photo"><svg width="18" height="18" fill="none" stroke="#392E2C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <div id="gal-dots" class="absolute bottom-3 inset-x-0 flex justify-center gap-1.5"></div>
+      </div>
     </div>
     <div class="md:w-1/2 p-6 md:p-8 flex flex-col justify-center">
       <h1 id="title" class="text-3xl md:text-4xl font-bold text-eva-burgundy mb-2">Sudoku Pocket Book</h1>
@@ -189,7 +207,8 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
     </div>
     <a class="fx-menu-link" style="--i:0" data-link="instagram" target="_blank" rel="noopener noreferrer"><span class="fx-ico" style="background:linear-gradient(45deg,#f9a825,#e1306c 55%,#833ab4)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" fill="#fff" stroke="none"/></svg></span>Our Instagram • إنستغرام</a>
     <a class="fx-menu-link" style="--i:1" data-link="tiktok" target="_blank" rel="noopener noreferrer"><span class="fx-ico" style="background:#111"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.2a3.7 3.7 0 1 1-3.7-3.7"/><path d="M14 4c.3 2.4 1.9 3.9 4.2 4.1"/></svg></span>Our TikTok • تيك توك</a>
-    <div class="fx-credit" style="--i:2">Website developed by <a data-link="developpeur" target="_blank" rel="noopener noreferrer">LuffyDZ</a></div>
+    <a class="fx-menu-link" style="--i:2" data-link="track" target="_blank" rel="noopener noreferrer"><span class="fx-ico" style="background:#392E2C"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg></span>Track my order • تتبع طلبي</a>
+    <div class="fx-credit" style="--i:3">Website developed by <a data-link="developpeur" target="_blank" rel="noopener noreferrer">LuffyDZ</a></div>
   </nav>
 </div>
 
@@ -206,7 +225,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
       <div class="relative w-28 h-28 mb-6 mx-auto"><div class="sg" id="sg"></div><svg class="absolute inset-0 w-full h-full" viewBox="0 0 52 52"><circle class="ck-c" cx="26" cy="26" r="24" fill="none" stroke="#22c55e" stroke-width="2"/><path class="ck-p" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M15 27l7 7 15-15"/></svg></div>
       <h3 class="text-2xl font-bold mb-2">Order confirmed! • تم تأكيد الطلب</h3>
       <p class="text-gray-600 mb-8">Thank you for your trust! We will call you shortly to confirm your order.<span dir="rtl" class="block mt-1">شكرا لثقتكم. سنتصل بكم قريبا لتأكيد الطلب 🧩</span></p>
-      <div id="rc" class="rc hidden"><div class="rc-slot"></div><div class="rc-clip"><div id="rc-paper" class="rc-paper"></div></div></div>
+      <div id="rc" class="rc hidden"><div class="rc-slot"></div><div class="rc-clip"><div id="rc-paper" class="rc-paper"></div></div><button type="button" id="rc-dl" class="rc-dl" onclick="downloadReceipt()">Download receipt • تحميل الوصل</button></div>
       <button onclick="closeModal()" class="bg-eva-burgundy text-white px-10 py-4 rounded-xl font-bold w-full btn-tactile">Back to the store • العودة للمتجر</button>
     </div>
 
@@ -276,20 +295,23 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 const API_BASE_URL='https://vexback.onrender.com/api';
 const P={name:'Sudoku Pocket Book',price:1200,img:'https://ik.imagekit.io/vexaccess/IMG_7243.jpg'};
 /* TES LIENS : remplis seulement ce qui est entre guillemets (un lien vide est masqué) */
-const LINKS={instagram:"https://www.instagram.com/vex.accessoires",tiktok:"https://www.tiktok.com/@vex.essentials",developpeur:"https://www.instagram.com/luffydz.dev"};
+const LINKS={instagram:"https://www.instagram.com/vex.accessoires",tiktok:"https://www.tiktok.com/@vex.essentials",developpeur:"https://www.instagram.com/luffydz.dev",track:""};
+/* PHOTOS DU PRODUIT : ajoute les liens ici, entre guillemets, separes par des virgules (la premiere = photo principale) */
+const PHOTOS=["https://ik.imagekit.io/vexaccess/IMG_7320.jpg","https://ik.imagekit.io/vexaccess/IMG_7322.jpg"];
+P.img=PHOTOS[0];
 const WILAYAS=["Adrar","Chlef","Laghouat","Oum El Bouaghi","Batna","Béjaïa","Biskra","Béchar","Blida","Bouira","Tamanrasset","Tébessa","Tlemcen","Tiaret","Tizi Ouzou","Alger","Djelfa","Jijel","Sétif","Saïda","Skikda","Sidi Bel Abbès","Annaba","Guelma","Constantine","Médéa","Mostaganem","M'Sila","Mascara","Ouargla","Oran","El Bayadh","Illizi","Bordj Bou Arreridj","Boumerdès","El Tarf","Tindouf","Tissemsilt","El Oued","Khenchela","Souk Ahras","Tipaza","Mila","Aïn Defla","Naâma","Aïn Témouchent","Ghardaïa","Relizane","Timimoun","Bordj Badji Mokhtar","Ouled Djellal","Béni Abbès","In Salah","In Guezzam","Touggourt","Djanet","El M'Ghair","El Meniaa"];
 const CARRIERS=[["yalidine","Yalidine Express"],["zr express","ZR Express"],["maystro","Maystro Delivery"],["zimou express","Zimou Express"],["partenaire point relais","Partenaire Point Relais"],["noest","Noest Express"],["nord ouest","Noest Express"],["anderson","Anderson Express"],["world express","World Express"],["dhd","DHD Express"],["kazi","Kazi Tour"],["ecotrack","Ecotrack"],["gazelle","Gazelle Express"]];
 /* LOGOS DES BUREAUX : colle l'URL de chaque logo entre les guillemets (vide = icône 📦) */
 const LOGOS={
-   "Yalidine Express":"https://ik.imagekit.io/vexaccess/yalidine?updatedAt=1793874918108",
-  "ZR Express":"https://ik.imagekit.io/vexaccess/ZR%20Express",
-  "Maystro Delivery":"https://ik.imagekit.io/vexaccess/Maystro",
-  "Zimou Express":"https://ik.imagekit.io/vexaccess/Zimou",
+  "Yalidine Express":"https://ik.imagekit.io/vexaccess/1twbrw8xoMWK1h9sdRhKdI1JQBkBqHpggcOytFDY.svg",
+  "ZR Express":"https://ik.imagekit.io/vexaccess/0Q2ELStA5D4OdfncOY3zVvPSUijoLVknT1eEzyTv.svg",
+  "Maystro Delivery":"https://ik.imagekit.io/vexaccess/vOigAOwX95np3YfAl2KHFZTxV4sgsApjFxyHdo1u.svg?updatedAt=1793752741116",
+  "Zimou Express":"https://ik.imagekit.io/vexaccess/kgpDluZg45cjgvWacRcAnV6mEHwgRFG5dmAEB6AB.svg",
   "Partenaire Point Relais":"https://ik.imagekit.io/vexaccess/SWnI0NhKpJSikoaQjf8XgkY2MvTvzeOtYQCMZifn.svg?updatedAt=1793752697235",
-  "Noest Express":"https://ik.imagekit.io/vexaccess/NOEST",
+  "Noest Express":"https://ik.imagekit.io/vexaccess/8zd2kfjvZbrvtUYQFUBpwKPmPK2m0yQvM3ITjYFd.svg",
   "Anderson Express":"https://ik.imagekit.io/vexaccess/401VLgCQ3l7Kw97GnYZTwJlymnm1awY36cOghllI.svg?updatedAt=1793752600971",
-  "World Express":"https://ik.imagekit.io/vexaccess/World",
-  "DHD Express":"https://ik.imagekit.io/vexaccess/DHD",
+  "World Express":"https://ik.imagekit.io/vexaccess/zzgAcMgTGqN8e6A1g0FVV4rSgTu45rNrS3IzIqCH.svg",
+  "DHD Express":"https://ik.imagekit.io/vexaccess/3Wztz7vZNPTnXGSZpC4ew6KaHwX82Tmi2OEcahTz.svg?updatedAt=1793752656620",
   "Kazi Tour":"",
   "Ecotrack":"",
   "Gazelle Express":""
@@ -395,7 +417,7 @@ function resetCheckout(){
   $('#stopdesk-container').classList.add('hidden');$('#domicile-container').classList.add('hidden');$('#stopdesk-hint').classList.remove('hidden');
   $('#commune').innerHTML='<option value="" disabled selected>Municipality • البلدية</option>';$('#commune').disabled=true;
   $('#stopdesk_val').value='';cachedPricing=[];homePrice=null;homeStatus='';
-  $('#telephone').classList.remove('is-valid','is-invalid');updateProgress();updateSummary();
+  $('#telephone').classList.remove('is-valid','is-invalid');updateProgress();updateSummary();loadPrefill();
 }
 function closeModal(){
   const m=$('#cart-modal');if(m.classList.contains('hidden')||m.classList.contains('closing'))return;
@@ -533,6 +555,7 @@ function submitOrder(e){
   .then(r=>r.json()).then(d=>{
     if(!d.success){showToast('Error: '+(d.message||'order refused'),'error');return}
     cart=[];save();updateCartUI();
+    try{localStorage.setItem(PREF,JSON.stringify({nom:orderData.nom,prenom:orderData.prenom,tel:orderData.telephone}))}catch(e){}
     form.classList.add('hidden');$('#cart-items').classList.add('hidden');$('#fp').classList.add('hidden');
     const s=$('#success');s.classList.remove('hidden');s.classList.add('flex');
     $('#modal-box').scrollTop=0;startGrid();setTimeout(petalBurst,2300);setTimeout(()=>showReceipt(rc,d),3000);
@@ -571,7 +594,9 @@ function followScroll(ms){
   const b=$('#modal-box'),from=b.scrollTop,t0=performance.now();
   (function f(t){const p=Math.min((t-t0)/ms,1),e=1-Math.pow(1-p,2),max=b.scrollHeight-b.clientHeight;b.scrollTop=from+(max-from)*e;if(p<1)requestAnimationFrame(f)})(t0);
 }
+let lastRc=null;
 function showReceipt(m,d){
+  lastRc={m,d};
   const tr=d.tracking&&d.tracking!=='En attente'?d.tracking:'';
   $('#rc-paper').innerHTML='<div class="rb">Vex Store 🧩</div><div class="rs">Order receipt • وصل الطلب</div><div class="rs">'+esc(m.date)+(d.orderId?' • #'+esc(d.orderId):'')+'</div><div class="rh"></div>'
   +m.items.map(i=>'<div class="rr"><span><b>'+i.qty+'×</b> '+esc(i.name)+'</span><span>'+P.price*i.qty+' DA</span></div>').join('')
@@ -584,6 +609,85 @@ function showReceipt(m,d){
 /* barre collante mobile */
 const sbar=$('#sbar');$('#sbar-price').textContent=P.price+' DA';
 new IntersectionObserver(([e])=>sbar.classList.toggle('show',!e.isIntersecting&&e.boundingClientRect.top<0)).observe($('#cta'));
+/* ---------- Galerie photos ---------- */
+(function(){
+  const g=$('#gal'),dots=$('#gal-dots'),pv=$('#gal-prev'),nx=$('#gal-next');
+  g.innerHTML=PHOTOS.map((u,i)=>'<img class="gimg" src="'+esc(u)+'" alt="Sudoku Pocket Book '+(i+1)+'"'+(i?' loading="lazy"':' fetchpriority="high"')+'>').join('');
+  if(PHOTOS.length<2)return;
+  dots.innerHTML=PHOTOS.map((_,i)=>'<i class="gd'+(i?'':' on')+'"></i>').join('');
+  g.addEventListener('scroll',()=>{const i=Math.round(g.scrollLeft/g.clientWidth);dots.querySelectorAll('.gd').forEach((d,k)=>d.classList.toggle('on',k===i))},{passive:true});
+  pv.classList.add('on');nx.classList.add('on');
+  pv.onclick=()=>g.scrollBy({left:-g.clientWidth,behavior:'smooth'});
+  nx.onclick=()=>g.scrollBy({left:g.clientWidth,behavior:'smooth'});
+})();
+/* ---------- Champs pre-remplis ---------- */
+const PREF='vex_prefill';
+function loadPrefill(){
+  try{const o=JSON.parse(localStorage.getItem(PREF)||'null');if(!o)return;
+    $('#nom').value=o.nom||'';$('#prenom').value=o.prenom||'';$('#telephone').value=fmt(o.tel||'');
+    $('#telephone').dispatchEvent(new Event('input',{bubbles:true}));}catch(e){}
+}
+/* ---------- Recu en image ---------- */
+async function receiptPNG(m,d){
+  try{await document.fonts.load('600 20px Poppins');await document.fonts.load('700 20px Poppins')}catch(e){}
+  const W=600,S=2,PD=52,FF='Poppins, Cairo, sans-serif',tr=d.tracking&&d.tracking!=='En attente'?d.tracking:'';
+  const lay=c=>{
+    let y=104;
+    const f=(w,sz)=>{c.font=w+' '+sz+'px '+FF};
+    const t=(s,x,al,col,w,sz)=>{f(w,sz);c.fillStyle=col;c.textAlign=al;c.fillText(s,x,y)};
+    const hr=()=>{c.strokeStyle='#e5e7eb';c.lineWidth=2;c.setLineDash([8,6]);c.beginPath();c.moveTo(PD,y);c.lineTo(W-PD,y);c.stroke();c.setLineDash([]);y+=32};
+    const wrap=(s,max,w,sz)=>{f(w,sz);const out=[];let l='';String(s).split(' ').forEach(x=>{const n=l?l+' '+x:x;if(c.measureText(n).width>max&&l){out.push(l);l=x}else l=n});out.push(l);return out};
+    t('Vex Store 🧩',W/2,'center','#392E2C',700,40);
+    y+=34;t('Order receipt • وصل الطلب',W/2,'center','#6b7280',500,21);
+    y+=30;t(m.date+(d.orderId?'  •  #'+d.orderId:''),W/2,'center','#9ca3af',400,18);
+    y+=30;hr();
+    m.items.forEach(i=>{
+      wrap(i.qty+'× '+i.name,340,600,22).forEach((l,k)=>{if(k)y+=28;t(l,PD,'left','#392E2C',600,22);if(!k)t(P.price*i.qty+' DA',W-PD,'right','#392E2C',600,22)});
+      y+=40;
+    });
+    y-=16;hr();
+    [['Subtotal',m.sub],['Delivery',m.ship]].forEach(r=>{t(r[0],PD,'left','#6b7280',500,20);t(r[1],W-PD,'right','#392E2C',600,20);y+=36});
+    t('TOTAL',PD,'left','#392E2C',700,26);t(m.total,W-PD,'right','#392E2C',700,28);
+    y+=30;hr();
+    m.info.filter(r=>r[1]).forEach(r=>{
+      t(r[0],PD,'left','#9ca3af',500,18);
+      wrap(r[1],330,500,19).forEach((l,k)=>{if(k)y+=26;t(l,W-PD,'right','#392E2C',500,19)});
+      y+=36;
+    });
+    y-=4;hr();
+    if(tr){t('Tracking',W/2,'center','#6b7280',500,19);y+=40;t(tr,W/2,'center','#392E2C',700,30);y+=50;hr()}
+    t('We will call you shortly to confirm',W/2,'center','#392E2C',600,19);
+    y+=32;t('سنتصل بكم قريبا لتأكيد الطلب',W/2,'center','#392E2C',600,19);
+    return y+64;
+  };
+  const H=Math.ceil(lay(document.createElement('canvas').getContext('2d')));
+  const cv=document.createElement('canvas');cv.width=W*S;cv.height=H*S;
+  const c=cv.getContext('2d');c.scale(S,S);
+  c.fillStyle='#FBFAF8';c.fillRect(0,0,W,H);
+  c.save();c.shadowColor='rgba(57,46,44,.18)';c.shadowBlur=18;c.shadowOffsetY=6;c.fillStyle='#fff';
+  c.beginPath();c.moveTo(22,22);c.lineTo(W-22,22);c.lineTo(W-22,H-40);
+  const tw=(W-44)/28;for(let i=1;i<=28;i++)c.lineTo(W-22-i*tw,i%2?H-22:H-40);
+  c.closePath();c.fill();c.restore();
+  c.fillStyle='#392E2C';c.fillRect(22,22,W-44,10);
+  lay(c);
+  return new Promise(res=>cv.toBlob(res,'image/png'));
+}
+async function downloadReceipt(){
+  if(!lastRc)return;
+  const blob=await receiptPNG(lastRc.m,lastRc.d);if(!blob)return;
+  const name='receipt-vex-'+Date.now()+'.png',ua=navigator.userAgent;
+  const ios=/iP(hone|ad|od)/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  const file=new File([blob],name,{type:'image/png'});
+  if(ios&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:'Vex Store receipt'})}catch(e){}return}
+  const url=URL.createObjectURL(blob);
+  if(/FBAN|FBAV|Instagram/.test(ua)){
+    const o=document.createElement('div');o.className='fixed inset-0 z-[700] bg-black/70 flex flex-col items-center justify-center p-4 gap-3';
+    o.innerHTML='<p class="text-white text-sm text-center">Press and hold the receipt, then Save image<br>اضغط مطولا للحفظ</p><img src="'+url+'" class="max-h-[72vh] rounded-xl"><button class="bg-white rounded-xl px-8 py-2 font-bold">Close</button>';
+    o.querySelector('button').onclick=()=>{o.remove();URL.revokeObjectURL(url)};document.body.appendChild(o);return;
+  }
+  const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);
+}
+loadPrefill();
 updateCartUI();
 </script>
 </body>
