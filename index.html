@@ -397,7 +397,7 @@ function updateSummary(){
   if(hp.dataset.v!==hv){hp.dataset.v=hv;hp.innerHTML=hv==='sk'?'<span class="sk inline-block w-14 h-4 align-middle"></span>':hv}
   const ship=$('#sum-ship');
   if(t==='express'&&homeStatus==='loading'){if(ship.dataset.sk!=='1'){ship.dataset.sk='1';ship._v=undefined;ship.innerHTML='<span class="sk inline-block w-24 h-4 align-middle"></span>'}}
-  else{delete ship.dataset.sk;f!==null?roll('#sum-ship',f):set('#sum-ship',!t?'Choose delivery • اختر التوصيل':t==='stopdesk'?'Choose an office • اختر مكتبا':homeStatus||'Confirmed by phone • تأكيد هاتفي')}
+  else{delete ship.dataset.sk;f!==null?roll('#sum-ship',f):set('#sum-ship',!t?'Choose delivery • اختر التوصيل':t==='stopdesk'?'Choose an office • اختر مكتبا':homeStatus||'Choose your municipality • اختر بلديتك')}
   roll('#cart-total',sub+(f||0));
 }
 
